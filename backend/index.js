@@ -1,0 +1,96 @@
+import express from "express";
+import bodyParser from "body-parser";
+import mysql from "mysql";
+import cors from "cors";
+import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+const app = express();
+const PORT = 4000;
+app.use(bodyParser.json());
+app.use(cookieParser());
+dotenv.config();
+
+const connection = mysql.createConnection({
+  host: "localhost",
+  // user: process.env.DB_USER,
+  user: "root",
+  password: "",
+  // password: process.env.DB_PASS,
+  database: "ontheroad",
+});
+
+app.use(
+  cors({
+    credentials: true,
+    // origin: "http://localhost:19006",
+    // origin: "http://10.0.2.2:3000",
+  })
+);
+
+// REGISTER
+app.post("/users", (req, res) => {
+  const user = req.body;
+  const { firstName, lastName, email, password } = user;
+
+  // console.log(req.body);
+  connection.query(
+    "INSERT INTO users (first_name, last_name, email, password) VALUES (?,?,?,?)",
+    [firstName, lastName, email, password],
+    (err, result) => {
+      if (err) {
+        res.sendStatus(500);
+      }
+      return result;
+    }
+  );
+});
+
+function generateAccessToken(userId) {
+  return jwt.sign(userId, process.env.ACCESS_TOKEN_SECRET);
+}
+
+//LOGIN
+app.post("/login", (req, res) => {
+  const user = req.body;
+  const { email, password } = user;
+
+  // console.log(req.body);
+  connection.query(
+    "SELECT * FROM users WHERE `email` = ? AND `password` = ?",
+    [email, password],
+    (err, result) => {
+      if (err) {
+        res.sendStatus(500);
+      }
+      if (result.length > 0) {
+        // console.log(result[0].id);
+        const userId = result[0].id;
+        const token = generateAccessToken(userId);
+        res.send({ data: result[0], token });
+      } else {
+        console.log("fail");
+      }
+    }
+  );
+});
+
+app.get("/", (req, res) => {
+  res.send("My get endpoint");
+});
+
+connection.connect((err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    app.listen(PORT, () => {
+      console.log("DB Connected");
+      console.log("Server started on port " + PORT);
+    });
+  }
+});
+
+// app.listen(PORT, () => {
+//   console.log("listening on PORT ", PORT);
+// });
