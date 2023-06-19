@@ -66,7 +66,10 @@ export default function LoginOrSignup({ navigation }) {
           <Text style={styles.login_btn_text}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.signup_btn}>
+        <TouchableOpacity
+          style={styles.signup_btn}
+          onPress={() => navigation.navigate("SignUp")}
+        >
           <Text style={styles.signup_btn_text}>Sign Up</Text>
         </TouchableOpacity>
       </View>

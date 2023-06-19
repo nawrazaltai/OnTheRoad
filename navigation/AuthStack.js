@@ -5,6 +5,7 @@ import OnboardingScreen2 from "../screens/OnboardingScreen2";
 import OnboardingScreen3 from "../screens/OnboardingScreen3";
 import LoginScreen from "../screens/LoginScreen";
 import LoginOrSignup from "../screens/LoginOrSignupScreen";
+import SignUp from "../screens/SignUpScreen";
 
 import {
   View,
@@ -46,6 +47,7 @@ export default function AuthStack() {
           name="LoginScreen"
           component={LoginScreen}
         ></RootStack.Screen>
+        <RootStack.Screen name="SignUp" component={SignUp}></RootStack.Screen>
       </RootStack.Group>
     </Stack.Navigator>
   );

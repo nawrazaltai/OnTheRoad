@@ -23,6 +23,24 @@ function UsersProvider({ children }) {
     // console.log(content);
   }
 
+  async function checkUserAvailability(email) {
+    await fetch(
+      "http://10.0.2.2:4000/userAvailable",
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      }
+      // { username: username }
+    )
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }
+
   async function login(userInput) {
     const response = await fetch("http://10.0.2.2:4000/login", {
       method: "POST",
@@ -67,7 +85,14 @@ function UsersProvider({ children }) {
 
   return (
     <UsersContext.Provider
-      value={{ registerUser, login, logout, firstName, token }}
+      value={{
+        registerUser,
+        login,
+        logout,
+        firstName,
+        token,
+        checkUserAvailability,
+      }}
     >
       {children}
     </UsersContext.Provider>

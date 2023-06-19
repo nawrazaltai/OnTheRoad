@@ -68,10 +68,30 @@ app.post("/login", (req, res) => {
         // console.log(result[0].id);
         const userId = result[0].id;
         const token = generateAccessToken(userId);
+        // console.log(token);
         res.send({ data: result[0], token });
       } else {
         console.log("fail");
       }
+    }
+  );
+});
+
+app.post("/userAvailable", (req, res) => {
+  const user = req.body.email;
+  console.log(user);
+
+  connection.query(
+    "SELECT * FROM users WHERE email = ?",
+    [user],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.sendStatus(500);
+      }
+      const hasUsers = result.length > 0;
+      console.log(hasUsers);
+      res.status(200).json({ hasUsers });
     }
   );
 });

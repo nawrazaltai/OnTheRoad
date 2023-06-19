@@ -1,29 +1,28 @@
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   createStackNavigator,
 } from "@react-navigation/native-stack";
-import SignUp from "./screens/signUp";
 import { UsersProvider } from "./UsersContext";
-import { UsersContext } from "./UsersContext";
-import AuthStack from "./navigation/AuthStack";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
+import AppNav from "./navigation/AppNav";
+
 export default function App() {
   const Stack = createNativeStackNavigator();
 
-  // const {} = useContext(UsersContext);
   // console.log(firstName);
 
   return (
-    <UsersProvider>
-      <NavigationContainer>
+    <NavigationContainer>
+      <UsersProvider>
         <StatusBar translucent />
-        <AuthStack />
-      </NavigationContainer>
-    </UsersProvider>
+        <AppNav />
+      </UsersProvider>
+    </NavigationContainer>
   );
 }
 
