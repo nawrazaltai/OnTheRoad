@@ -13,10 +13,12 @@ app.use(cookieParser());
 dotenv.config();
 
 const connection = mysql.createConnection({
-  host: "localhost",
-  // user: process.env.DB_USER,
-  user: "root",
-  password: "",
+  // host: "localhost",
+  host: "45.79.250.211",
+  user: "test",
+  password: "password",
+  // user: "root",
+  // password: "",
   // password: process.env.DB_PASS,
   database: "ontheroad",
 });

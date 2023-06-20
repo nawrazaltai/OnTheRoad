@@ -37,7 +37,7 @@ export default function TrendingBrands() {
         // width: 360,
       >
         <FlatList
-          numColumns={3}
+          numColumns={4}
           data={allCars}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
