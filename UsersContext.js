@@ -8,6 +8,7 @@ function UsersProvider({ children }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [token, setToken] = useState(null);
+  const [allCars, setAllCars] = useState([]);
 
   async function registerUser(newUser) {
     const response = await fetch("http://10.0.2.2:4000/users", {
@@ -21,6 +22,24 @@ function UsersProvider({ children }) {
     });
     const content = await response.json();
     // console.log(content);
+  }
+
+  async function getCars() {
+    // let carsCopy = [...allCars];
+    const response = await fetch("http://10.0.2.2:4000/cars", {
+      // 10.0.2.2:3000
+      method: "GET",
+      mode: "cors",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      // body: JSON.stringify(newUser),
+    });
+    const content = await response.json();
+    // carsCopy.push(content);
+    setAllCars(content.cars);
+    // console.log();
   }
 
   async function checkUserAvailability(email) {
@@ -72,7 +91,7 @@ function UsersProvider({ children }) {
       const token = await AsyncStorage.getItem("token");
       setToken(token);
       const user = await AsyncStorage.getItem("user");
-      console.log(token, user);
+      // console.log(token, user);
       setFirstName(user);
     } catch (e) {
       console.log("error", e);
@@ -81,6 +100,7 @@ function UsersProvider({ children }) {
 
   useEffect(() => {
     isLoggedIn();
+    getCars();
   }, []);
 
   return (
@@ -92,6 +112,7 @@ function UsersProvider({ children }) {
         firstName,
         token,
         checkUserAvailability,
+        allCars,
       }}
     >
       {children}

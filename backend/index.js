@@ -96,8 +96,16 @@ app.post("/userAvailable", (req, res) => {
   );
 });
 
-app.get("/", (req, res) => {
-  res.send("My get endpoint");
+app.get("/cars", (req, res) => {
+  let arr = [];
+  connection.query("SELECT * FROM cars", [], (err, result) => {
+    if (err) {
+      res.sendStatus(500);
+    }
+    console.log(result);
+    // arr.push(result);
+    res.json({ cars: result });
+  });
 });
 
 connection.connect((err) => {

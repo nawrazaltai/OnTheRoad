@@ -19,13 +19,13 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import SearchIcon from "react-native-vector-icons/Ionicons";
 
-export default function TrendingBrands() {
+export default function PopularCars() {
   const { allCars } = useContext(UsersContext);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.top_view}>
-        <Text style={styles.title}>Trending Brands</Text>
+        <Text style={styles.title}>Popular Cars</Text>
         <TouchableOpacity style={styles.view_all_btn}>
           <Text style={styles.view_all_btn_text}>View All</Text>
         </TouchableOpacity>
@@ -33,11 +33,10 @@ export default function TrendingBrands() {
 
       <ScrollView
         horizontal={true}
-
         // width: 360,
       >
         <FlatList
-          numColumns={3}
+          //   numColumns={3}
           data={allCars}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
@@ -45,10 +44,8 @@ export default function TrendingBrands() {
               <TouchableOpacity
                 style={{
                   margin: 10,
-                  width: 90,
-                  height: 90,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  width: 365,
+                  height: 230,
                   backgroundColor: "white",
                   shadowColor: "#000",
                   shadowOffset: {
@@ -59,20 +56,29 @@ export default function TrendingBrands() {
                   shadowRadius: 4.65,
                   borderRadius: 10,
                   elevation: 4,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  //   flexDirection: "row",
                 }}
               >
-                {
-                  <Image
-                    style={{
-                      resizeMode: "contain",
-                      width: 75,
-                      height: 75,
-                    }}
-                    source={{
-                      uri: `${item.logo_url.toString()}`,
-                    }}
-                  />
-                }
+                <Image
+                  style={{
+                    resizeMode: "contain",
+                    width: 300,
+                    height: 120,
+                  }}
+                  source={{
+                    uri: `${item.picture.toString()}`,
+                  }}
+                />
+                <View style={styles.car_info}>
+                  <Text style={styles.car_brand}>
+                    {item.brand.toUpperCase()} {item.model}
+                  </Text>
+                  <Text style={styles.car_price}>
+                    {item.price_per_day}$/Day
+                  </Text>
+                </View>
               </TouchableOpacity>
             );
           }}
@@ -85,13 +91,14 @@ export default function TrendingBrands() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 25,
-    marginHorizontal: 8,
+    marginTop: 20,
+    marginHorizontal: 0,
   },
   top_view: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginHorizontal: 10,
   },
   title: {
     fontWeight: "700",
@@ -101,5 +108,22 @@ const styles = StyleSheet.create({
     paddingRight: 8,
     fontSize: 14,
     color: "gray",
+  },
+  car_info: {
+    // alignItems: "flex-start",
+    flex: 1,
+    marginLeft: 15,
+    marginTop: 10,
+    paddingHorizontal: 2,
+    gap: 8,
+    // justifyContent: "center",
+  },
+  car_brand: {
+    fontWeight: 600,
+    fontSize: 24,
+  },
+  car_price: {
+    fontWeight: 400,
+    fontSize: 17,
   },
 });

@@ -16,9 +16,10 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Searchbar from "../components/Searchbar";
 import TrendingBrands from "../components/TrendingBrands";
+import PopularCars from "../components/PopularCars";
 
 export default function Home() {
-  const { firstName } = useContext(UsersContext);
+  const { firstName, getCars } = useContext(UsersContext);
   // const [location, setLocation] = useState();
   const [lat, setLat] = useState(25.276987);
   const [long, setLong] = useState(55.296249);
@@ -72,6 +73,7 @@ export default function Home() {
 
   useEffect(() => {
     getAddress();
+    // getCars();
   }, []);
 
   return (
@@ -97,6 +99,7 @@ export default function Home() {
         </View>
         <Searchbar />
         <TrendingBrands />
+        <PopularCars />
 
         {/* <TouchableOpacity onPress={() => logout()}>
           <Text style={{ color: "black" }}>Logout</Text>
@@ -110,6 +113,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
+    backgroundColor: "#FAFAFA",
   },
   top_div: {
     flexDirection: "row",
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     alignItems: "center",
     justifyContent: "space-between",
-    fontFamily: "Montserrat-Regular",
+    // fontFamily: "Montserrat-Regular",
   },
   welcome_text: {
     marginTop: 20,
@@ -139,5 +143,6 @@ const styles = StyleSheet.create({
   location_text: {
     color: "gray",
     fontSize: 15,
+    fontWeight: 700,
   },
 });
