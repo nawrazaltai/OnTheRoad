@@ -17,10 +17,39 @@ import UserCircle from "react-native-vector-icons/FontAwesome";
 import MenuIcon from "react-native-vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import SearchIcon from "react-native-vector-icons/Ionicons";
+import HeartO from "react-native-vector-icons/FontAwesome";
+import Heart from "react-native-vector-icons/FontAwesome";
+import CarDetails from "../screens/CarDetails";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+
+import Gear from "react-native-vector-icons/MaterialCommunityIcons";
+import Gauge from "react-native-vector-icons/Ionicons";
+
+//car-shift-pattern
 
 export default function PopularCars() {
+  const navigation = useNavigation();
   const { allCars } = useContext(UsersContext);
+
+  const [loaded] = useFonts({
+    MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    MontserratThin: require("../assets/fonts/Montserrat-Thin.ttf"),
+    MontserratRegular: require("../assets/fonts/Montserrat-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    async function Prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    Prepare();
+    // getCars();
+  }, []);
+
+  if (!loaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,10 +71,13 @@ export default function PopularCars() {
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("CarDetails", { item });
+                }}
                 style={{
                   margin: 10,
                   width: 365,
-                  height: 230,
+                  height: 265,
                   backgroundColor: "white",
                   shadowColor: "#000",
                   shadowOffset: {
@@ -61,11 +93,16 @@ export default function PopularCars() {
                   //   flexDirection: "row",
                 }}
               >
+                <TouchableOpacity style={styles.heart_div}>
+                  <HeartO name="heart-o" size={18} />
+                  {/* <Heart name="heart" size={18} color="red" /> */}
+                </TouchableOpacity>
                 <Image
                   style={{
                     resizeMode: "contain",
-                    width: 300,
+                    width: 240,
                     height: 120,
+                    marginTop: 0,
                   }}
                   source={{
                     uri: `${item.picture.toString()}`,
@@ -75,9 +112,31 @@ export default function PopularCars() {
                   <Text style={styles.car_brand}>
                     {item.brand.toUpperCase()} {item.model}
                   </Text>
-                  <Text style={styles.car_price}>
-                    {item.price_per_day}$/Day
-                  </Text>
+                  <Text style={styles.year}>{item.year}</Text>
+                </View>
+                <View style={styles.line}></View>
+                <View style={styles.bottom_div}>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Gauge name={"speedometer"} size={20} />
+                    <Text style={styles.top_speed}>{item.top_speed}km/h</Text>
+                  </View>
+
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Gear name="car-shift-pattern" size={20} />
+                    <Text style={styles.gear}>{item.gear}</Text>
+                  </View>
+                  <View>
+                    <Text
+                      style={{
+                        fontFamily: "MontserratRegular",
+                      }}
+                    >
+                      <Text style={styles.car_price}>
+                        ${item.price_per_day}
+                      </Text>
+                      /Day
+                    </Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             );
@@ -91,7 +150,7 @@ export default function PopularCars() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 0,
     marginHorizontal: 0,
   },
   top_view: {
@@ -101,29 +160,65 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   title: {
-    fontWeight: "700",
     fontSize: 20,
+    fontFamily: "MontserratSemiBold",
   },
   view_all_btn_text: {
     paddingRight: 8,
     fontSize: 14,
     color: "gray",
+    fontFamily: "MontserratRegular",
+  },
+  line: {
+    alignSelf: "center",
+    width: "85%",
+    height: 1,
+    marginTop: 5,
+    backgroundColor: "#32928c",
   },
   car_info: {
-    // alignItems: "flex-start",
-    flex: 1,
-    marginLeft: 15,
-    marginTop: 10,
-    paddingHorizontal: 2,
-    gap: 8,
+    alignSelf: "flex-start",
     // justifyContent: "center",
+    marginTop: 10,
+    width: "100%",
+    paddingHorizontal: 30,
   },
   car_brand: {
-    fontWeight: 600,
+    fontFamily: "MontserratSemiBold",
     fontSize: 24,
   },
+  year: {
+    fontSize: 14,
+    fontWeight: 300,
+    fontFamily: "MontserratRegular",
+  },
   car_price: {
-    fontWeight: 400,
-    fontSize: 17,
+    fontSize: 20,
+    fontFamily: "MontserratSemiBold",
+  },
+  heart_div: {
+    position: "absolute",
+    top: 15,
+    right: 20,
+  },
+  bottom_div: {
+    flexDirection: "row",
+    alignSelf: "flex-start",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-between",
+    paddingHorizontal: 30,
+    marginVertical: 10,
+  },
+  top_speed: {
+    // marginRight: 1,
+    fontSize: 13,
+    marginLeft: 1,
+    fontFamily: "MontserratRegular",
+  },
+  gear: {
+    fontSize: 13,
+    marginLeft: 1,
+    fontFamily: "MontserratRegular",
   },
 });

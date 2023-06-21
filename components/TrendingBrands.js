@@ -11,16 +11,31 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UsersContext } from "../UsersContext";
-import * as Location from "expo-location";
-import LocationIcon from "react-native-vector-icons/Ionicons";
-import UserCircle from "react-native-vector-icons/FontAwesome";
-import MenuIcon from "react-native-vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import SearchIcon from "react-native-vector-icons/Ionicons";
 
 export default function TrendingBrands() {
   const { allCars } = useContext(UsersContext);
+
+  const [loaded] = useFonts({
+    MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    MontserratThin: require("../assets/fonts/Montserrat-Thin.ttf"),
+    MontserratRegular: require("../assets/fonts/Montserrat-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    async function Prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    Prepare();
+    // getCars();
+  }, []);
+
+  if (!loaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,8 +52,8 @@ export default function TrendingBrands() {
         // width: 360,
       >
         <FlatList
-          numColumns={4}
-          data={allCars}
+          numColumns={5}
+          data={allCars.slice(0, 5)}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
@@ -94,12 +109,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontWeight: "700",
     fontSize: 20,
+    fontFamily: "MontserratSemiBold",
   },
   view_all_btn_text: {
     paddingRight: 8,
     fontSize: 14,
     color: "gray",
+    fontFamily: "MontserratRegular",
   },
 });

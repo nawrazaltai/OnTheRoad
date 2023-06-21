@@ -18,35 +18,16 @@ import Searchbar from "../components/Searchbar";
 import TrendingBrands from "../components/TrendingBrands";
 import PopularCars from "../components/PopularCars";
 
-export default function Home() {
-  const { firstName, getCars } = useContext(UsersContext);
+export default function Home({ navigation }) {
+  const { firstName, getCars, logout } = useContext(UsersContext);
   // const [location, setLocation] = useState();
   const [lat, setLat] = useState(25.276987);
   const [long, setLong] = useState(55.296249);
   const [city, setCity] = useState("");
   const [countryCode, setCountryCode] = useState("");
 
-  // useEffect(() => {
-  //   async function prepare() {
-  //     await SplashScreen.preventAutoHideAsync();
-  //   }
-  //   prepare();
-  // }, []);
-
-  // if (!loaded) {
-  //   return undefined;
-  // } else {
-  //   SplashScreen.hideAsync();
-  // }
-
-  // const [loaded] = useFonts({
-  //   MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
-  //   MontserratThin: require("../assets/fonts/Montserrat-Thin.ttf"),
-  //   MontserratRegular: require("../assets/fonts/Montserrat-Regular.ttf"),
-  // });
-
   function capitalFirstLetter(name) {
-    return name.charAt(0).toUpperCase() + name.slice(1);
+    return name?.charAt(0).toUpperCase() + name?.slice(1);
   }
 
   const getAddress = async () => {
@@ -71,10 +52,33 @@ export default function Home() {
     // console.log(loc[0].isoCountryCode);
   };
 
+  // useEffect(() => {
+  //   async function prepare() {
+  //     await SplashScreen.preventAutoHideAsync();
+  //   }
+  //   prepare();
+  // }, []);
+
+  const [loaded] = useFonts({
+    MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    MontserratThin: require("../assets/fonts/Montserrat-Thin.ttf"),
+    MontserratRegular: require("../assets/fonts/Montserrat-Regular.ttf"),
+  });
+
   useEffect(() => {
     getAddress();
+    async function Prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    Prepare();
     // getCars();
   }, []);
+
+  if (!loaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -102,7 +106,7 @@ export default function Home() {
         <PopularCars />
 
         {/* <TouchableOpacity onPress={() => logout()}>
-          <Text style={{ color: "black" }}>Logout</Text>
+          <Text style={{ color: "black", fontSize: 30 }}>Logout</Text>
         </TouchableOpacity> */}
       </ScrollView>
     </SafeAreaView>
@@ -113,7 +117,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "#F2F5F7",
   },
   top_div: {
     flexDirection: "row",
@@ -123,18 +127,20 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     alignItems: "center",
     justifyContent: "space-between",
-    // fontFamily: "Montserrat-Regular",
+    fontFamily: "MontserratRegular",
   },
   welcome_text: {
     marginTop: 20,
     paddingLeft: 5,
     fontSize: 24,
+    fontFamily: "MontserratRegular",
   },
   find_car_text: {
     marginTop: -2,
     paddingLeft: 6,
     fontSize: 23,
     letterSpacing: 0.96,
+    fontFamily: "MontserratRegular",
   },
   location_view: {
     flexDirection: "row",
@@ -143,6 +149,7 @@ const styles = StyleSheet.create({
   location_text: {
     color: "gray",
     fontSize: 15,
-    fontWeight: 700,
+    // fontWeight: 700,
+    fontFamily: "MontserratSemiBold",
   },
 });

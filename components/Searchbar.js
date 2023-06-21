@@ -18,12 +18,32 @@ import * as SplashScreen from "expo-splash-screen";
 import SearchIcon from "react-native-vector-icons/Ionicons";
 
 export default function Searchbar() {
+  const [loaded] = useFonts({
+    MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    MontserratThin: require("../assets/fonts/Montserrat-Thin.ttf"),
+    MontserratRegular: require("../assets/fonts/Montserrat-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    async function Prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    Prepare();
+    // getCars();
+  }, []);
+
+  if (!loaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
+
   return (
     <View style={styles.searchbar}>
       <SearchIcon name="search-sharp" size={28} color={"black"} />
       <TextInput
         style={styles.input_field}
-        placeholder="Search for a car here.."
+        placeholder="Search for a car.."
         placeholderTextColor={"black"}
       ></TextInput>
     </View>
@@ -37,15 +57,19 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     borderWidth: 2,
     borderStyle: "solid",
-    borderColor: "gray",
+    // borderColor: "gray",
+    borderColor: "#32928c",
     borderRadius: 5,
     flexDirection: "row",
     alignItems: "center",
     marginTop: 15,
     paddingLeft: 4,
+    backgroundColor: "#FFF",
   },
   input_field: {
-    fontSize: 20,
+    fontSize: 18,
     paddingLeft: 4,
+    width: "100%",
+    fontFamily: "MontserratRegular",
   },
 });
