@@ -17,19 +17,22 @@ import UserCircle from "react-native-vector-icons/FontAwesome";
 import MenuIcon from "react-native-vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import HeartO from "react-native-vector-icons/FontAwesome";
-import Heart from "react-native-vector-icons/FontAwesome";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CarDetails from "../screens/CarDetails";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import AlphabetList from "react-native-flatlist-alphabet";
 
 import Gear from "react-native-vector-icons/MaterialCommunityIcons";
 import Gauge from "react-native-vector-icons/Ionicons";
 
-//car-shift-pattern
-
-export default function PopularCars() {
+export default function PopularCars({ cars, title, viewAll, carsAmount }) {
   const navigation = useNavigation();
-  const { allCars } = useContext(UsersContext);
+  const { handleLikeEvent, likes } = useContext(UsersContext);
+  //   console.log(cars);
+
+  //   const myData = cars.map((car)=>(
+  //   { value: car[0], key: car}
+  //   ))
 
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
@@ -42,7 +45,6 @@ export default function PopularCars() {
       await SplashScreen.preventAutoHideAsync();
     }
     Prepare();
-    // getCars();
   }, []);
 
   if (!loaded) {
@@ -54,9 +56,13 @@ export default function PopularCars() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.top_view}>
-        <Text style={styles.title}>Popular Cars</Text>
+        {title.length !== 0 && <Text style={styles.title}>{title}</Text>}
         <TouchableOpacity style={styles.view_all_btn}>
-          <Text style={styles.view_all_btn_text}>View All</Text>
+          {viewAll ? (
+            <Text style={styles.view_all_btn_text}>View All</Text>
+          ) : (
+            ""
+          )}
         </TouchableOpacity>
       </View>
 
@@ -66,7 +72,7 @@ export default function PopularCars() {
       >
         <FlatList
           //   numColumns={3}
-          data={allCars}
+          data={cars.slice(0, carsAmount)}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
@@ -93,9 +99,15 @@ export default function PopularCars() {
                   //   flexDirection: "row",
                 }}
               >
-                <TouchableOpacity style={styles.heart_div}>
-                  <HeartO name="heart-o" size={18} />
-                  {/* <Heart name="heart" size={18} color="red" /> */}
+                <TouchableOpacity
+                  onPress={() => handleLikeEvent(item.id)}
+                  style={styles.heart_div}
+                >
+                  {likes?.includes(item.id) ? (
+                    <FontAwesome name="heart" size={18} color="red" />
+                  ) : (
+                    <FontAwesome name="heart-o" size={18} />
+                  )}
                 </TouchableOpacity>
                 <Image
                   style={{
@@ -105,7 +117,7 @@ export default function PopularCars() {
                     marginTop: 0,
                   }}
                   source={{
-                    uri: `${item.picture.toString()}`,
+                    uri: `${item.picture?.toString()}`,
                   }}
                 />
                 <View style={styles.car_info}>
@@ -134,7 +146,7 @@ export default function PopularCars() {
                       <Text style={styles.car_price}>
                         ${item.price_per_day}
                       </Text>
-                      /Day
+                      /day
                     </Text>
                   </View>
                 </View>
@@ -143,6 +155,12 @@ export default function PopularCars() {
           }}
         />
       </ScrollView>
+      {/* <AlphabetList
+      data={
+        myData
+      }
+      renderItem={}
+      /> */}
     </SafeAreaView>
   );
 }

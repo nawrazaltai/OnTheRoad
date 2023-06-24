@@ -8,7 +8,20 @@ function UsersProvider({ children }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [token, setToken] = useState(null);
+  const [likes, setLikes] = useState([]);
+  const [favoriteCars, setFavoriteCars] = useState([]);
   const [allCars, setAllCars] = useState([]);
+
+  function handleLikeEvent(id) {
+    let res = [...likes];
+    if (res.includes(id)) {
+      let idx = res.indexOf(id);
+      res.splice(idx, 1);
+    } else {
+      res.push(id);
+    }
+    setLikes(res);
+  }
 
   async function registerUser(newUser) {
     const response = await fetch("http://10.0.2.2:4000/users", {
@@ -91,8 +104,11 @@ function UsersProvider({ children }) {
       const token = await AsyncStorage.getItem("token");
       setToken(token);
       const user = await AsyncStorage.getItem("user");
-      // console.log(token, user);
       setFirstName(user);
+      // const favorites = await AsyncStorage.getItem("favoriteCars");
+      // const res = JSON.parse(favorites);
+      // console.log("RESULT", favorites);
+      // setFavoriteCars(favorites);
     } catch (e) {
       console.log("error", e);
     }
@@ -101,7 +117,40 @@ function UsersProvider({ children }) {
   useEffect(() => {
     isLoggedIn();
     getCars();
+    handleLiked();
   }, []);
+
+  const handleLiked = async () => {
+    let data = await AsyncStorage?.getItem("favoriteCars");
+    let arr = JSON.parse(data);
+    let res = arr?.map((car) => car.id);
+    setFavoriteCars(arr);
+    setLikes(res);
+    // setLikes(Object.keys(arr))
+  };
+  // console.log(likes);
+
+  function saveFavorites() {
+    let arr = [];
+    allCars.map((car) => {
+      if (likes.includes(car.id)) {
+        arr.push(car);
+        setFavoriteCars(arr);
+      }
+    });
+  }
+  // Handle FavoriteCars array.
+  useEffect(() => {
+    saveFavorites();
+  }, [likes]);
+
+  const storeInStorage = async () => {
+    await AsyncStorage?.setItem("favoriteCars", JSON.stringify(favoriteCars));
+  };
+
+  useEffect(() => {
+    storeInStorage();
+  }, [favoriteCars]);
 
   return (
     <UsersContext.Provider
@@ -113,6 +162,9 @@ function UsersProvider({ children }) {
         token,
         checkUserAvailability,
         allCars,
+        handleLikeEvent,
+        likes,
+        favoriteCars,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
 import FavoriteCars from "../screens/FavoriteCars";
@@ -6,6 +6,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CarDetails from "../screens/CarDetails";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import CarsByBrand from "../screens/CarsByBrand";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -19,9 +20,13 @@ const HomeStack = () => {
         component={Home}
       ></Stack.Screen>
       <Stack.Screen name="CarDetails" component={CarDetails}></Stack.Screen>
+      <Stack.Screen name="CarsByBrand" component={CarsByBrand}></Stack.Screen>
     </Stack.Navigator>
   );
 };
+
+// useEffect(() => {
+// }, []);
 
 export default function TabNavigator() {
   return (
@@ -31,7 +36,8 @@ export default function TabNavigator() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: "#32928c",
-          height: 80,
+
+          height: 70,
         },
         tabBarInactiveTintColor: "#fff",
         tabBarActiveTintColor: "orange",
@@ -42,6 +48,7 @@ export default function TabNavigator() {
         component={HomeStack}
         options={({ route }) => ({
           tabBarStyle: {
+            height: 70,
             display: tabBarVisibility(route),
             backgroundColor: "#32928c",
           },
@@ -64,10 +71,11 @@ export default function TabNavigator() {
 }
 
 const tabBarVisibility = (route) => {
-  const routeName = getFocusedRouteNameFromRoute(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Home";
+  //   console.log(routeName);
 
-  if (routeName == "CarDetails") {
-    return "none";
+  if (routeName == "Home") {
+    return "flex";
   }
-  return "flex";
+  return "none";
 };

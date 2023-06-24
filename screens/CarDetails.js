@@ -18,7 +18,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function CarDetails({ navigation, route }) {
-  //   const { allCars } = useContext(UsersContext);
+  const { likes, handleLikeEvent } = useContext(UsersContext);
 
   const { item } = route?.params;
   //   console.log(item);
@@ -67,7 +67,7 @@ export default function CarDetails({ navigation, route }) {
 
       <View style={styles.info_view}>
         <ScrollView
-          horizontal={false}
+          //   horizontal={false}
           style={{
             paddingHorizontal: 18,
             paddingVertical: 15,
@@ -76,13 +76,18 @@ export default function CarDetails({ navigation, route }) {
           <Text style={styles.car_name}>
             {item.brand.toUpperCase()} {item.model}
           </Text>
-          <TouchableOpacity style={styles.hearts_view}>
-            {/* <FontAwesome name={"heart"} size={15} color={"red"} /> */}
-            <FontAwesome name={"heart-o"} size={15} />
+          <TouchableOpacity
+            style={styles.hearts_view}
+            onPress={() => handleLikeEvent(item.id)}
+          >
+            {likes.includes(item.id) ? (
+              <FontAwesome name={"heart"} size={15} color={"red"} />
+            ) : (
+              <FontAwesome name={"heart-o"} size={15} />
+            )}
           </TouchableOpacity>
           <Text style={styles.year}>{item.year}</Text>
           <Text style={styles.spec}>Specifications</Text>
-
           <View>
             <ScrollView style={styles.spec_cards_view} horizontal={true}>
               <View style={styles.spec_card}>
@@ -149,19 +154,21 @@ export default function CarDetails({ navigation, route }) {
                 <Text style={styles.card_text}>{item.top_speed}km/h</Text>
               </View>
             </ScrollView>
-          </View>
 
-          <View>
-            <Text style={styles.spec}>Description</Text>
-            <Text style={styles.description}>{item.description}</Text>
-          </View>
-          <View style={styles.price_view}>
-            <Text>${item.price_per_day}/day</Text>
-            <TouchableOpacity>
-              <Text>Rent Now</Text>
-            </TouchableOpacity>
+            <View>
+              <Text style={styles.spec}>Description</Text>
+              <Text style={styles.description}>{item.description}</Text>
+            </View>
           </View>
         </ScrollView>
+      </View>
+
+      <View style={styles.price_view}>
+        <Text style={styles.footer_price_text}>${item.price_per_day}/day</Text>
+        <TouchableOpacity style={styles.rent_now_btn}>
+          <Text style={styles.rent_now_text}>Rent Now</Text>
+          <MaterialCommunityIcons name="arrow-right" size={20} color={"#fff"} />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -169,12 +176,14 @@ export default function CarDetails({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
+    minHeight: "100%",
     backgroundColor: "#F2F5F7",
+    backgroundColor: "white",
   },
   image_view: {
     backgroundColor: "#FFF",
-    height: "30%",
+    height: "35%",
     alignItems: "center",
     justifyContent: "center",
     // borderBottomLeftRadius: 30,
@@ -193,16 +202,13 @@ const styles = StyleSheet.create({
     height: 40,
   },
   info_view: {
-    // position: "absolute",
+    position: "absolute",
     // paddingHorizontal: 18,
     // paddingVertical: 15,
     bottom: 0,
-    // right: 0,
-    // left: 0,
-    borderWidth: 1,
     borderTopRightRadius: 40,
     borderTopLeftRadius: 40,
-    height: "100%",
+    height: "70%",
     backgroundColor: "#EEEEEE",
   },
   car_name: {
@@ -258,12 +264,34 @@ const styles = StyleSheet.create({
   },
   price_view: {
     backgroundColor: "#32928c",
+    position: "absolute",
+    bottom: 0,
     width: "100%",
-    height: 70,
+    height: 80,
+    paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  footer_price_text: {
+    fontFamily: "MontserratSemiBold",
+    fontSize: 22,
+    color: "white",
+    letterSpacing: 1,
+  },
+  rent_now_btn: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "orange",
+  },
+  rent_now_text: {
+    fontFamily: "MontserratSemiBold",
+    fontSize: 18,
+    color: "#fff",
   },
 });

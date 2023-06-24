@@ -81,7 +81,7 @@ app.post("/login", (req, res) => {
 
 app.post("/userAvailable", (req, res) => {
   const user = req.body.email;
-  console.log(user);
+  // console.log(user);
 
   connection.query(
     "SELECT * FROM users WHERE email = ?",
@@ -99,15 +99,27 @@ app.post("/userAvailable", (req, res) => {
 });
 
 app.get("/cars", (req, res) => {
-  let arr = [];
   connection.query("SELECT * FROM cars", [], (err, result) => {
     if (err) {
       res.sendStatus(500);
     }
-    console.log(result);
-    // arr.push(result);
     res.json({ cars: result });
   });
+});
+
+app.post("/cars/brand", (req, res) => {
+  const brand = req.body.brand;
+
+  connection.query(
+    "SELECT * FROM cars WHERE brand = ?",
+    [brand],
+    (err, result) => {
+      if (err) {
+        res.sendStatus(500);
+      }
+      res.json({ brand: result });
+    }
+  );
 });
 
 connection.connect((err) => {

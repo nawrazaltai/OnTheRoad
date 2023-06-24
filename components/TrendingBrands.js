@@ -13,8 +13,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { UsersContext } from "../UsersContext";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import PopularCars from "./PopularCars";
 
 export default function TrendingBrands() {
+  const navigation = useNavigation();
   const { allCars } = useContext(UsersContext);
 
   const [loaded] = useFonts({
@@ -46,11 +49,7 @@ export default function TrendingBrands() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView
-        horizontal={true}
-
-        // width: 360,
-      >
+      <ScrollView horizontal={true}>
         <FlatList
           numColumns={5}
           data={allCars.slice(0, 5)}
@@ -74,6 +73,9 @@ export default function TrendingBrands() {
                   shadowRadius: 4.65,
                   borderRadius: 10,
                   elevation: 4,
+                }}
+                onPress={() => {
+                  navigation.navigate("CarsByBrand", { brand: item.brand });
                 }}
               >
                 {

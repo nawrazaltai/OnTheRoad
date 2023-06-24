@@ -19,7 +19,7 @@ import TrendingBrands from "../components/TrendingBrands";
 import PopularCars from "../components/PopularCars";
 
 export default function Home({ navigation }) {
-  const { firstName, getCars, logout } = useContext(UsersContext);
+  const { firstName, getCars, logout, allCars } = useContext(UsersContext);
   // const [location, setLocation] = useState();
   const [lat, setLat] = useState(25.276987);
   const [long, setLong] = useState(55.296249);
@@ -103,7 +103,12 @@ export default function Home({ navigation }) {
         </View>
         <Searchbar />
         <TrendingBrands />
-        <PopularCars />
+        <PopularCars
+          cars={allCars}
+          title={"Recommendations"}
+          viewAll={true}
+          carsAmount={4}
+        />
 
         {/* <TouchableOpacity onPress={() => logout()}>
           <Text style={{ color: "black", fontSize: 30 }}>Logout</Text>
