@@ -123,23 +123,23 @@ function UsersProvider({ children }) {
   const handleLiked = async () => {
     let data = await AsyncStorage?.getItem("favoriteCars");
     let arr = JSON.parse(data);
+
+    // Create res array containing all car ids and setLikes to res.
     let res = arr?.map((car) => car.id);
     setFavoriteCars(arr);
     setLikes(res);
-    // setLikes(Object.keys(arr))
   };
-  // console.log(likes);
 
+  // Handle FavoriteCars array.
   function saveFavorites() {
     let arr = [];
     allCars.map((car) => {
       if (likes.includes(car.id)) {
         arr.push(car);
-        setFavoriteCars(arr);
       }
+      setFavoriteCars(arr);
     });
   }
-  // Handle FavoriteCars array.
   useEffect(() => {
     saveFavorites();
   }, [likes]);
