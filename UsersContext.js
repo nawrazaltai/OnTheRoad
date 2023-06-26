@@ -11,6 +11,7 @@ function UsersProvider({ children }) {
   const [likes, setLikes] = useState([]);
   const [favoriteCars, setFavoriteCars] = useState([]);
   const [allCars, setAllCars] = useState([]);
+  const [emailCheck, setEmailCheck] = useState("");
 
   function handleLikeEvent(id) {
     let res = [...likes];
@@ -34,6 +35,8 @@ function UsersProvider({ children }) {
       body: JSON.stringify(newUser),
     });
     const content = await response.json();
+    login({ email: newUser.email, password: newUser.password });
+
     // console.log(content);
   }
 
@@ -56,21 +59,18 @@ function UsersProvider({ children }) {
   }
 
   async function checkUserAvailability(email) {
-    await fetch(
-      "http://10.0.2.2:4000/userAvailable",
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      }
-      // { username: username }
-    )
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    const result = await fetch("http://10.0.2.2:4000/userAvailable", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    }).then((res) => res.json());
+    if (result?.emailCheck) {
+      return true;
+    }
   }
 
   async function login(userInput) {
@@ -165,6 +165,7 @@ function UsersProvider({ children }) {
         handleLikeEvent,
         likes,
         favoriteCars,
+        emailCheck,
       }}
     >
       {children}

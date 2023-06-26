@@ -19,49 +19,25 @@ import Key from "react-native-vector-icons/FontAwesome5";
 import Check from "react-native-vector-icons/AntDesign";
 import Cross from "react-native-vector-icons/AntDesign";
 
-let emails = [];
-const userSchema = yup.object({
-  firstName: yup.string().required("First name required"),
-  lastName: yup.string().required("Last name required"),
-  email: yup.string().email().required("Email required"),
-  // email: yup
-  //   .string()
-  //   .email("Must be a valid email")
-  //   .notOneOf(emails, "Already taken")
-  //   .required("Email required")
-  //   .test("IsValid", "already taken", async function (value) {
-  //     const data = await fetch(`http://10.0.2.2:4000/userAvailable`, {
-  //       method: "POST",
-  //       mode: "cors",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ value }),
-  //     });
-
-  //     const res = await data.json();
-  //     emails.push(res.hasUsers);
-  //     return emails;
-  //     //     // console.log(res);
-  //     //     // (value) => value == true;
-  //     //     // .then((res) => res.json())
-  //     //     // .then((d) => console.log(d));
-  //     //     // .then((res) => res.json())
-  //     //     // .then((d) => d.hasUsers !== undefined && emails.push(d.hasUsers));
-  //     //     // .then((d) => d.hasUsers?.length > 0 && emails.push(d.hasUsers));
-  //     //     // console.log("data", emails.hasUsers);
-  //     //     // return true;
-  //     //     // })
-  //   }),
-  password: yup.string().min(8).required("Password required"),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password"), null], "Passwords must match"),
-});
-
 export default function SignUp({ navigation }) {
-  const { registerUser } = useContext(UsersContext);
+  const { registerUser, checkUserAvailability, login } =
+    useContext(UsersContext);
+
+  const userSchema = yup.object({
+    firstName: yup.string().required("First name required"),
+    lastName: yup.string().required("Last name required"),
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required")
+      .test("Unique Email", "Email already in use", async (value) => {
+        return (await checkUserAvailability(value)) !== true;
+      }),
+    password: yup.string().min(8).required("Password required"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords must match"),
+  });
 
   const closeAndNavToLogin = () => {
     navigation.goBack();
@@ -110,10 +86,11 @@ export default function SignUp({ navigation }) {
             password: "",
             confirmPassword: "",
           }}
-          onSubmit={(values, actions) => {
+          onSubmit={async (values, actions) => {
             const newUser = values;
             registerUser(newUser);
-            actions.resetForm();
+
+            // actions.resetForm();
           }}
         >
           {(props) => (
@@ -185,6 +162,7 @@ export default function SignUp({ navigation }) {
                 <TextInput
                   style={styles.inputField}
                   value={props.values.email}
+                  // onChangeText={props.validateOnChange("email")}
                   onChangeText={props.handleChange("email")}
                   placeholder={"Email*"}
                   onBlur={props.handleBlur("email")}
@@ -194,7 +172,8 @@ export default function SignUp({ navigation }) {
                   {props.touched.email && props.errors.email}
                 </Text> */}
 
-                {props.values.email.length < 1 && !props.touched.email ? (
+                {/* CODE BELOW WORKS!! 
+                 {props.values.email.length < 1 && !props.touched.email ? (
                   ""
                 ) : (props.values.email.length > 0 &&
                     props.errors.email &&
@@ -203,6 +182,14 @@ export default function SignUp({ navigation }) {
                     props.errors.email &&
                     props.touched.email) ? (
                   <Cross name="close" style={styles.errorIcon} />
+                ) : (
+                  <Check name="check" size={10} color={"white"} />
+                )} */}
+
+                {props.errors.email && props.touched.email ? (
+                  <Cross name="close" style={styles.errorIcon} />
+                ) : !props.touched.email && !props.errors.email ? (
+                  ""
                 ) : (
                   <Check name="check" size={10} color={"white"} />
                 )}
@@ -220,21 +207,11 @@ export default function SignUp({ navigation }) {
                   style={styles.inputField}
                   value={props.values.password}
                   onChangeText={props.handleChange("password")}
-                  placeholder={"Password*"}
+                  placeholder={"Password* (min 8 characters)"}
                   onBlur={props.handleBlur("password")}
                 ></TextInput>
 
-                {props.touched.password ||
-                (props.values.password.length > 0 && props.errors.password) ? (
-                  <Cross name="close" style={styles.errorIcon} />
-                ) : props.values.password.length < 1 &&
-                  !props.touched.password ? (
-                  ""
-                ) : (
-                  <Check name="check" size={10} color={"white"} />
-                )}
-
-                {/* {props.values.password.length < 1 && !props.touched.password ? (
+                {props.values.password.length < 1 && !props.touched.password ? (
                   ""
                 ) : (props.values.password.length > 0 &&
                     props.errors.password) ||
@@ -242,7 +219,7 @@ export default function SignUp({ navigation }) {
                   <Cross name="close" style={styles.errorIcon} />
                 ) : (
                   <Check name="check" size={10} color={"white"} />
-                )} */}
+                )}
               </View>
 
               <View

@@ -110,9 +110,9 @@ export default function Home({ navigation }) {
           carsAmount={4}
         />
 
-        {/* <TouchableOpacity onPress={() => logout()}>
+        <TouchableOpacity onPress={() => logout()}>
           <Text style={{ color: "black", fontSize: 30 }}>Logout</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

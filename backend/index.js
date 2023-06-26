@@ -37,14 +37,42 @@ app.post("/users", (req, res) => {
   const { firstName, lastName, email, password } = user;
 
   // console.log(req.body);
+  //   connection.query(
+  //     "INSERT INTO users (first_name, last_name, email, password) VALUES (?,?,?,?)",
+  //     [firstName, lastName, email, password],
+  //     (err, result) => {
+  //       if (err) {
+  //         console.log(err);
+  //         res.sendStatus(500);
+  //       }
+  //       return result;
+  //     }
+  //   );
+  // });
+
   connection.query(
     "INSERT INTO users (first_name, last_name, email, password) VALUES (?,?,?,?)",
     [firstName, lastName, email, password],
     (err, result) => {
       if (err) {
-        res.sendStatus(500);
+        if (err.code == "ER_DUP_ENTRY" || err.errno == 1062) {
+          res.send({
+            error: `User ${email} already exists, please try another one`,
+          });
+          // console.log(
+          //   "The entered Email already exists, please try another one"
+          // );
+        } else {
+          res.send({ error: err.sqlMessage });
+          // console.log("Error:", err.sqlMessage);
+        }
+        // console.log(err);
+        // res.sendStatus(500);
+      } else {
+        console.log("success");
+        res.send({ success: `User ${email} successfully registered!` });
+        return result;
       }
-      return result;
     }
   );
 });
@@ -88,12 +116,9 @@ app.post("/userAvailable", (req, res) => {
     [user],
     (err, result) => {
       if (err) {
-        console.log(err);
         res.sendStatus(500);
       }
-      const hasUsers = result.length > 0;
-      console.log(hasUsers);
-      res.status(200).json({ hasUsers });
+      res.status(200).json({ emailCheck: result[0]?.email });
     }
   );
 });
