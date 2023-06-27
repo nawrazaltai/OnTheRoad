@@ -18,7 +18,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function CarDetails({ navigation, route }) {
-  const { likes, handleLikeEvent } = useContext(UsersContext);
+  const { likes, handleLikeEvent, resetLikes } = useContext(UsersContext);
 
   const { item } = route?.params;
   //   console.log(item);
@@ -80,7 +80,7 @@ export default function CarDetails({ navigation, route }) {
             style={styles.hearts_view}
             onPress={() => handleLikeEvent(item.id)}
           >
-            {likes.includes(item.id) ? (
+            {likes?.includes(item.id) ? (
               <FontAwesome name={"heart"} size={15} color={"red"} />
             ) : (
               <FontAwesome name={"heart-o"} size={15} />

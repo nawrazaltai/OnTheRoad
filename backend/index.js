@@ -132,6 +132,15 @@ app.get("/cars", (req, res) => {
   });
 });
 
+app.get("/brands", (req, res) => {
+  connection.query("SELECT * FROM brands", [], (err, result) => {
+    if (err) {
+      res.sendStatus(500);
+    }
+    res.json({ brands: result });
+  });
+});
+
 app.post("/cars/brand", (req, res) => {
   const brand = req.body.brand;
 

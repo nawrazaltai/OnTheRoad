@@ -19,7 +19,8 @@ import TrendingBrands from "../components/TrendingBrands";
 import PopularCars from "../components/PopularCars";
 
 export default function Home({ navigation }) {
-  const { firstName, getCars, logout, allCars } = useContext(UsersContext);
+  const { firstName, getCars, logout, allCars, shuffledCars } =
+    useContext(UsersContext);
   // const [location, setLocation] = useState();
   const [lat, setLat] = useState(25.276987);
   const [long, setLong] = useState(55.296249);
@@ -80,6 +81,10 @@ export default function Home({ navigation }) {
     SplashScreen.hideAsync();
   }
 
+  // const shuffled = allCars.sort(() => 0.5 - Math.random());
+  // const fourRecommendations = shuffled.slice(0, 4);
+  // console.log(shuffled);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -104,7 +109,7 @@ export default function Home({ navigation }) {
         <Searchbar />
         <TrendingBrands />
         <PopularCars
-          cars={allCars}
+          cars={shuffledCars}
           title={"Recommendations"}
           viewAll={true}
           carsAmount={4}

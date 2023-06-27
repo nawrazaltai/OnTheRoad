@@ -20,8 +20,7 @@ import Check from "react-native-vector-icons/AntDesign";
 import Cross from "react-native-vector-icons/AntDesign";
 
 export default function SignUp({ navigation }) {
-  const { registerUser, checkUserAvailability, login } =
-    useContext(UsersContext);
+  const { registerUser, checkUserAvailability } = useContext(UsersContext);
 
   const userSchema = yup.object({
     firstName: yup.string().required("First name required"),

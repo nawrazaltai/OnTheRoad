@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
 import FavoriteCars from "../screens/FavoriteCars";
@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CarDetails from "../screens/CarDetails";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import CarsByBrand from "../screens/CarsByBrand";
+import { UsersContext } from "../UsersContext";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -25,10 +26,9 @@ const HomeStack = () => {
   );
 };
 
-// useEffect(() => {
-// }, []);
-
 export default function TabNavigator() {
+  const { likes, favoriteCars } = useContext(UsersContext);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -53,18 +53,26 @@ export default function TabNavigator() {
             backgroundColor: "#32928c",
           },
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="home" size={size} color={color} />
+            <FontAwesome name="home" size={30} color={color} />
           ),
         })}
       ></Tab.Screen>
       <Tab.Screen
         name="FavoriteCars"
         component={FavoriteCars}
-        options={{
+        options={({ route }) => ({
+          tabBarBadgeStyle: {
+            display: likes?.length !== 0 ? "flex" : "none",
+            marginTop: 7,
+            backgroundColor: "red",
+            color: "#000",
+            fontWeight: 500,
+          },
+          tabBarBadge: likes?.length > 0 && likes?.length,
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="heart" size={size} color={color} />
+            <FontAwesome name="heart" size={25} color={color} />
           ),
-        }}
+        })}
       ></Tab.Screen>
     </Tab.Navigator>
   );
@@ -78,4 +86,8 @@ const tabBarVisibility = (route) => {
     return "flex";
   }
   return "none";
+};
+
+const favoriteNotification = (route) => {
+  const CurrentRout = getFocusedRouteNameFromRoute(route) ?? "FavoriteCars";
 };

@@ -25,9 +25,15 @@ import AlphabetList from "react-native-flatlist-alphabet";
 import Gear from "react-native-vector-icons/MaterialCommunityIcons";
 import Gauge from "react-native-vector-icons/Ionicons";
 
-export default function PopularCars({ cars, title, viewAll, carsAmount }) {
+export default function PopularCars({
+  cars,
+  title,
+  viewAll,
+  carsAmount,
+  clearAll,
+}) {
   const navigation = useNavigation();
-  const { handleLikeEvent, likes } = useContext(UsersContext);
+  const { handleLikeEvent, likes, resetLikes } = useContext(UsersContext);
   //   console.log(cars);
 
   //   const myData = cars.map((car)=>(
@@ -57,9 +63,18 @@ export default function PopularCars({ cars, title, viewAll, carsAmount }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.top_view}>
         {title.length !== 0 && <Text style={styles.title}>{title}</Text>}
-        <TouchableOpacity style={styles.view_all_btn}>
-          {viewAll ? (
-            <Text style={styles.view_all_btn_text}>View All</Text>
+        <TouchableOpacity
+          onPress={() => resetLikes()}
+          style={styles.view_all_btn}
+        >
+          {viewAll || clearAll ? (
+            <Text style={styles.view_all_btn_text}>
+              {viewAll
+                ? "View All"
+                : clearAll
+                ? `${clearAll} (${likes?.length}) `
+                : ""}
+            </Text>
           ) : (
             ""
           )}
@@ -72,7 +87,7 @@ export default function PopularCars({ cars, title, viewAll, carsAmount }) {
       >
         <FlatList
           //   numColumns={3}
-          data={cars.slice(0, carsAmount)}
+          data={cars?.slice(0, carsAmount)}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
@@ -80,6 +95,7 @@ export default function PopularCars({ cars, title, viewAll, carsAmount }) {
                 onPress={() => {
                   navigation.navigate("CarDetails", { item });
                 }}
+                // onPress={() => console.log(item)}
                 style={{
                   margin: 10,
                   width: 365,
@@ -100,10 +116,11 @@ export default function PopularCars({ cars, title, viewAll, carsAmount }) {
                 }}
               >
                 <TouchableOpacity
-                  onPress={() => handleLikeEvent(item.id)}
+                  onPress={() => handleLikeEvent(item?.id)}
+                  //   onPress={() => console.log(item.id)}
                   style={styles.heart_div}
                 >
-                  {likes?.includes(item.id) ? (
+                  {likes?.includes(item?.id) ? (
                     <FontAwesome name="heart" size={18} color="red" />
                   ) : (
                     <FontAwesome name="heart-o" size={18} />

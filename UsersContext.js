@@ -11,18 +11,8 @@ function UsersProvider({ children }) {
   const [likes, setLikes] = useState([]);
   const [favoriteCars, setFavoriteCars] = useState([]);
   const [allCars, setAllCars] = useState([]);
-  const [emailCheck, setEmailCheck] = useState("");
-
-  function handleLikeEvent(id) {
-    let res = [...likes];
-    if (res.includes(id)) {
-      let idx = res.indexOf(id);
-      res.splice(idx, 1);
-    } else {
-      res.push(id);
-    }
-    setLikes(res);
-  }
+  const [shuffledCars, setShuffledCars] = useState([]);
+  const [allBrands, setAllBrands] = useState();
 
   async function registerUser(newUser) {
     const response = await fetch("http://10.0.2.2:4000/users", {
@@ -41,7 +31,6 @@ function UsersProvider({ children }) {
   }
 
   async function getCars() {
-    // let carsCopy = [...allCars];
     const response = await fetch("http://10.0.2.2:4000/cars", {
       // 10.0.2.2:3000
       method: "GET",
@@ -55,7 +44,47 @@ function UsersProvider({ children }) {
     const content = await response.json();
     // carsCopy.push(content);
     setAllCars(content.cars);
-    // console.log();
+  }
+
+  useEffect(() => {
+    const shuffled = allCars?.sort(() => 0.5 - Math.random());
+    // const fourRecommendations = shuffled.slice(0, 4);
+    // console.log(shuffled);
+    setShuffledCars(shuffled);
+  }, [allCars]);
+
+  async function getBrands() {
+    // let uniqueBrands = [];
+
+    // for (let i = 0; i < allCars?.length; i++) {
+    //   let currentCar = allCars[i];
+
+    //   const brandExists = uniqueBrands?.some(
+    //     (car) => car.brand == currentCar.brand
+    //   );
+    //   if (brandExists) {
+    //     continue;
+    //   } else {
+    //     uniqueBrands.push({
+    //       brand: currentCar.brand,
+    //       url: currentCar.logo_url,
+    //     });
+    //   }
+    // }
+    // setAllBrands(uniqueBrands);
+    const response = await fetch("http://10.0.2.2:4000/brands", {
+      // 10.0.2.2:3000
+      method: "GET",
+      mode: "cors",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      // body: JSON.stringify(newUser),
+    });
+    const content = await response.json();
+    // carsCopy.push(content);
+    setAllBrands(content.brands);
   }
 
   async function checkUserAvailability(email) {
@@ -87,10 +116,7 @@ function UsersProvider({ children }) {
       setFirstName(content.data.first_name);
       setToken(content.token);
       AsyncStorage.setItem("token", content.token);
-      // AsyncStorage.setItem("token", token);
       AsyncStorage.setItem("user", content.data.first_name);
-      // AsyncStorage.setItem("user", firstName);
-      //   setLastName(content.data.last_name);
     }
   }
 
@@ -113,12 +139,32 @@ function UsersProvider({ children }) {
       console.log("error", e);
     }
   };
+  useEffect(() => {
+    saveFavorites();
+  }, [likes]);
 
   useEffect(() => {
     isLoggedIn();
     getCars();
+    getBrands();
     handleLiked();
   }, []);
+
+  function handleLikeEvent(id) {
+    // let res = [];
+
+    if (likes) {
+      res = [...likes];
+
+      if (res?.includes(id)) {
+        let idx = res.indexOf(id);
+        res.splice(idx, 1);
+      } else {
+        res.push(id);
+      }
+      setLikes(res);
+    }
+  }
 
   const handleLiked = async () => {
     let data = await AsyncStorage?.getItem("favoriteCars");
@@ -130,19 +176,21 @@ function UsersProvider({ children }) {
     setLikes(res);
   };
 
+  function resetLikes() {
+    setLikes((prev) => []);
+  }
+
   // Handle FavoriteCars array.
   function saveFavorites() {
     let arr = [];
-    allCars.map((car) => {
-      if (likes.includes(car.id)) {
+    let allCarsCopy = [...allCars];
+    allCarsCopy?.map((car) => {
+      if (likes?.includes(car.id)) {
         arr.push(car);
       }
       setFavoriteCars(arr);
     });
   }
-  useEffect(() => {
-    saveFavorites();
-  }, [likes]);
 
   const storeInStorage = async () => {
     await AsyncStorage?.setItem("favoriteCars", JSON.stringify(favoriteCars));
@@ -165,7 +213,9 @@ function UsersProvider({ children }) {
         handleLikeEvent,
         likes,
         favoriteCars,
-        emailCheck,
+        allBrands,
+        resetLikes,
+        shuffledCars,
       }}
     >
       {children}

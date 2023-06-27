@@ -18,7 +18,13 @@ import PopularCars from "./PopularCars";
 
 export default function TrendingBrands() {
   const navigation = useNavigation();
-  const { allCars } = useContext(UsersContext);
+  const { allCars, allBrands } = useContext(UsersContext);
+  const [shuffled, setShuffled] = useState([]);
+
+  useEffect(() => {
+    const shuffled = allBrands?.sort(() => 0.5 - Math.random());
+    setShuffled(shuffled?.slice(0, 5));
+  }, [allBrands]);
 
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
@@ -31,7 +37,6 @@ export default function TrendingBrands() {
       await SplashScreen.preventAutoHideAsync();
     }
     Prepare();
-    // getCars();
   }, []);
 
   if (!loaded) {
@@ -52,7 +57,7 @@ export default function TrendingBrands() {
       <ScrollView horizontal={true}>
         <FlatList
           numColumns={5}
-          data={allCars.slice(0, 5)}
+          data={shuffled}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
@@ -86,7 +91,7 @@ export default function TrendingBrands() {
                       height: 75,
                     }}
                     source={{
-                      uri: `${item.logo_url.toString()}`,
+                      uri: `${item.brand_logo.toString()}`,
                     }}
                   />
                 }

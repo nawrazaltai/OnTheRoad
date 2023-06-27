@@ -49,9 +49,10 @@ export default function FavoriteCars() {
       {favoriteCars?.length !== 0 ? (
         <PopularCars
           cars={favoriteCars}
-          carsAmount={favoriteCars.length}
+          carsAmount={favoriteCars?.length}
           title="Favorite Cars"
           viewAll={false}
+          clearAll="Clear All"
         />
       ) : (
         <View
