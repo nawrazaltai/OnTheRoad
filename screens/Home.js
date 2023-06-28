@@ -87,7 +87,7 @@ export default function Home({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView nestedScrollEnabled={true}>
         <View style={styles.top_div}>
           <TouchableOpacity>
             <MenuIcon name="menu-outline" size={38} color={"black"} />
@@ -125,7 +125,7 @@ export default function Home({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     paddingHorizontal: 10,
     backgroundColor: "#F2F5F7",
   },
