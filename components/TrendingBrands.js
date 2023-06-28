@@ -91,7 +91,7 @@ export default function TrendingBrands() {
                       height: 75,
                     }}
                     source={{
-                      uri: `${item.brand_logo.toString()}`,
+                      uri: `${item.url.toString()}`,
                     }}
                   />
                 }

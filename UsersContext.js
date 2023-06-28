@@ -51,40 +51,41 @@ function UsersProvider({ children }) {
     // const fourRecommendations = shuffled.slice(0, 4);
     // console.log(shuffled);
     setShuffledCars(shuffled);
+    getBrands();
   }, [allCars]);
 
-  async function getBrands() {
-    // let uniqueBrands = [];
+  function getBrands() {
+    let uniqueBrands = [];
 
-    // for (let i = 0; i < allCars?.length; i++) {
-    //   let currentCar = allCars[i];
+    for (let i = 0; i < allCars?.length; i++) {
+      let currentCar = allCars[i];
 
-    //   const brandExists = uniqueBrands?.some(
-    //     (car) => car.brand == currentCar.brand
-    //   );
-    //   if (brandExists) {
-    //     continue;
-    //   } else {
-    //     uniqueBrands.push({
-    //       brand: currentCar.brand,
-    //       url: currentCar.logo_url,
-    //     });
-    //   }
-    // }
-    // setAllBrands(uniqueBrands);
-    const response = await fetch("http://10.0.2.2:4000/brands", {
-      // 10.0.2.2:3000
-      method: "GET",
-      mode: "cors",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      // body: JSON.stringify(newUser),
-    });
-    const content = await response.json();
-    // carsCopy.push(content);
-    setAllBrands(content.brands);
+      const brandExists = uniqueBrands?.some(
+        (car) => car.brand == currentCar.brand
+      );
+      if (brandExists) {
+        continue;
+      } else {
+        uniqueBrands.push({
+          brand: currentCar.brand,
+          url: currentCar.logo_url,
+        });
+      }
+    }
+    setAllBrands(uniqueBrands);
+
+    // const response = await fetch("http://10.0.2.2:4000/brands", {
+    //   // 10.0.2.2:3000
+    //   method: "GET",
+    //   mode: "cors",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   // body: JSON.stringify(newUser),
+    // });
+    // const content = await response.json();
+    // setAllBrands(content.brands);
   }
 
   async function checkUserAvailability(email) {

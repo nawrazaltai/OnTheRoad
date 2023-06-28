@@ -18,6 +18,27 @@ import * as SplashScreen from "expo-splash-screen";
 import SearchIcon from "react-native-vector-icons/Ionicons";
 
 export default function Searchbar() {
+  const { allCars } = useContext(UsersContext);
+  const [searchWord, setSearchWord] = useState("");
+
+  function search() {
+    let res = [];
+    allCars.filter((car) => {
+      if (
+        car.brand.toLowerCase().includes(searchWord.toLowerCase()) ||
+        car.model.toLowerCase().includes(searchWord.toLowerCase())
+      ) {
+        res.push(car);
+        // console.log(car);
+      }
+      // return car.brand == searchWord;
+    });
+  }
+
+  useEffect(() => {
+    search();
+  }, [searchWord]);
+
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
     MontserratThin: require("../assets/fonts/Montserrat-Thin.ttf"),
@@ -42,9 +63,12 @@ export default function Searchbar() {
     <View style={styles.searchbar}>
       <SearchIcon name="search-sharp" size={28} color={"black"} />
       <TextInput
+        clearButtonMode="while-editing"
         style={styles.input_field}
         placeholder="Search for a car.."
         placeholderTextColor={"black"}
+        value={searchWord}
+        onChangeText={setSearchWord}
       ></TextInput>
     </View>
   );
