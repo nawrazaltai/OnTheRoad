@@ -99,7 +99,7 @@ export default function PopularCars({
                 style={{
                   margin: 10,
                   width: 365,
-                  height: 265,
+                  height: 260,
                   backgroundColor: "white",
                   shadowColor: "#000",
                   shadowOffset: {

@@ -89,7 +89,7 @@ export default function Home({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ScrollView nestedScrollEnabled={true}>
         <View style={styles.top_div}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <MenuIcon name="menu-outline" size={38} color={"black"} />
           </TouchableOpacity>
           <View style={styles.location_view}>
