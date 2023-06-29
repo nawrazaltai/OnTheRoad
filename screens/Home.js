@@ -17,6 +17,7 @@ import * as SplashScreen from "expo-splash-screen";
 import Searchbar from "../components/Searchbar";
 import TrendingBrands from "../components/TrendingBrands";
 import PopularCars from "../components/PopularCars";
+import HistoryBookings from "./HistoryBookings";
 
 export default function Home({ navigation }) {
   const { firstName, getCars, logout, allCars, shuffledCars } =
@@ -87,7 +88,10 @@ export default function Home({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView nestedScrollEnabled={true}>
+      <ScrollView
+        nestedScrollEnabled={true}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.top_div}>
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <MenuIcon name="menu-outline" size={38} color={"black"} />
@@ -114,10 +118,11 @@ export default function Home({ navigation }) {
           viewAll={true}
           carsAmount={4}
         />
-
-        <TouchableOpacity onPress={() => logout()}>
-          <Text style={{ color: "black", fontSize: 30 }}>Logout</Text>
-        </TouchableOpacity>
+        {/* <TouchableOpacity
+          onPress={() => navigation.navigate("HistoryBookings")}
+        >
+          <Text>History</Text>
+        </TouchableOpacity> */}
       </ScrollView>
     </SafeAreaView>
   );

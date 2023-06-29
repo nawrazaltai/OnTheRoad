@@ -8,6 +8,7 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
+  Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UsersContext } from "../UsersContext";
@@ -77,7 +78,9 @@ export default function Searchbar() {
         ></TextInput>
         {searchWord.length > 0 && (
           <TouchableOpacity
-            onPress={() => setSearchWord("")}
+            onPress={() => {
+              setSearchWord(""), Keyboard.dismiss();
+            }}
             style={styles.clear_btn}
           >
             <Text style={styles.clear_btn_text}>x</Text>
@@ -85,7 +88,11 @@ export default function Searchbar() {
         )}
       </View>
       {searchWord.length != 0 && filteredCars.length != 0 && (
-        <ScrollView nestedScrollEnabled={true} style={styles.search_scrollview}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled={true}
+          style={styles.search_scrollview}
+        >
           {filteredCars.map((item) => (
             <View
               style={{

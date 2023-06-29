@@ -7,6 +7,7 @@ function UsersProvider({ children }) {
   //   const [users, setUsers] = useState({});
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [token, setToken] = useState(null);
   const [likes, setLikes] = useState([]);
   const [favoriteCars, setFavoriteCars] = useState([]);
@@ -115,9 +116,13 @@ function UsersProvider({ children }) {
     const content = await response.json();
     if (Object.values(content).length > 0) {
       setFirstName(content.data.first_name);
+      setLastName(content.data.last_name);
+      setEmail(content.data.email);
       setToken(content.token);
       AsyncStorage.setItem("token", content.token);
-      AsyncStorage.setItem("user", content.data.first_name);
+      AsyncStorage.setItem("firstName", content.data.first_name);
+      AsyncStorage.setItem("lastName", content.data.last_name);
+      AsyncStorage.setItem("email", content.data.email);
     }
   }
 
@@ -130,8 +135,12 @@ function UsersProvider({ children }) {
     try {
       const token = await AsyncStorage.getItem("token");
       setToken(token);
-      const user = await AsyncStorage.getItem("user");
-      setFirstName(user);
+      const first_name = await AsyncStorage.getItem("firstName");
+      setFirstName(first_name);
+      const last_name = await AsyncStorage.getItem("lastName");
+      setLastName(last_name);
+      const email = await AsyncStorage.getItem("email");
+      setEmail(email);
       // const favorites = await AsyncStorage.getItem("favoriteCars");
       // const res = JSON.parse(favorites);
       // console.log("RESULT", favorites);
@@ -208,7 +217,9 @@ function UsersProvider({ children }) {
         login,
         logout,
         firstName,
+        lastName,
         token,
+        email,
         checkUserAvailability,
         allCars,
         handleLikeEvent,
