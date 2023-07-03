@@ -16,6 +16,7 @@ import * as SplashScreen from "expo-splash-screen";
 import IonIcons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Payment from "./Payment";
 
 export default function CarDetails({ navigation, route }) {
   const { likes, handleLikeEvent, resetLikes } = useContext(UsersContext);
@@ -165,7 +166,10 @@ export default function CarDetails({ navigation, route }) {
 
       <View style={styles.price_view}>
         <Text style={styles.footer_price_text}>${item.price_per_day}/day</Text>
-        <TouchableOpacity style={styles.rent_now_btn}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Payment", { item })}
+          style={styles.rent_now_btn}
+        >
           <Text style={styles.rent_now_text}>Rent Now</Text>
           <MaterialCommunityIcons name="arrow-right" size={20} color={"#fff"} />
         </TouchableOpacity>
@@ -183,6 +187,7 @@ const styles = StyleSheet.create({
   },
   image_view: {
     backgroundColor: "#FFF",
+    // backgroundColor: "#333",
     height: "35%",
     alignItems: "center",
     justifyContent: "center",
@@ -200,6 +205,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     width: 40,
     height: 40,
+    backgroundColor: "#FFF",
   },
   info_view: {
     position: "absolute",
@@ -271,14 +277,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "center",
     flexDirection: "row",
     justifyContent: "space-between",
+    // borderRadius: 20,
   },
   footer_price_text: {
-    fontFamily: "MontserratSemiBold",
+    fontFamily: "MontserratRegular",
     fontSize: 22,
     color: "white",
-    letterSpacing: 1,
+    letterSpacing: 1.2,
   },
   rent_now_btn: {
     paddingHorizontal: 20,

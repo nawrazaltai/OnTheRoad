@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: -15,
     paddingLeft: 4,
+    elevation: 5,
     backgroundColor: "#FFF",
   },
   input_field: {
@@ -233,6 +234,7 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
     width: "100%",
     fontFamily: "MontserratRegular",
+    textTransform: "capitalize",
   },
   clear_btn: {
     position: "absolute",

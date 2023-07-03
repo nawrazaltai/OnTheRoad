@@ -3,6 +3,7 @@ import { View, Text, ImageBackground } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerItemList,
+  DrawerItem,
 } from "@react-navigation/drawer";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -113,6 +114,22 @@ export default function CustomDrawer(props) {
         </TouchableOpacity>
       </View>
       <DrawerContentScrollView {...props}>
+        {/* <DrawerItem
+          {...props}
+          label="Home"
+          focused={  true}
+          inactiveBackgroundColor="red"
+          activeBackgroundColor="green"
+          activeTintColor="white"
+          onPress={() => props.navigation.navigate("Home")}
+        />
+        <DrawerItem
+          {...props}
+          inactiveBackgroundColor="red"
+          activeBackgroundColor="green"
+          label="HistoryBookings"
+          onPress={() => props.navigation.navigate("HistoryBookings")}
+        /> */}
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
     </SafeAreaView>

@@ -186,12 +186,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 0,
-    marginHorizontal: 0,
+    marginBottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    // marginHorizontal: 10,
   },
   top_view: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    alignSelf: "stretch",
     marginHorizontal: 10,
   },
   title: {
@@ -230,6 +234,7 @@ const styles = StyleSheet.create({
   car_price: {
     fontSize: 20,
     fontFamily: "MontserratSemiBold",
+    // color: "#32928c",
   },
   heart_div: {
     position: "absolute",

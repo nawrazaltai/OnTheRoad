@@ -17,6 +17,7 @@ import FindTheShop from "../screens/FindTheShopScreen";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import HistoryBookings from "../screens/HistoryBookings";
+import Payment from "../screens/Payment";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -31,25 +32,11 @@ export const HomeStack = () => {
       ></Stack.Screen>
       <Stack.Screen name="CarDetails" component={CarDetails}></Stack.Screen>
       <Stack.Screen name="CarsByBrand" component={CarsByBrand}></Stack.Screen>
-      <Stack.Screen
-        name="HistoryBookings"
-        component={HistoryBookings}
-      ></Stack.Screen>
+      <Stack.Screen name="History" component={HistoryBookings}></Stack.Screen>
+      <Stack.Screen name="Payment" component={Payment}></Stack.Screen>
     </Stack.Navigator>
   );
 };
-
-// export function HistoryStack() {
-//   return (
-//     <Stack.Navigator screenOptions={{ headerShown: false }}>
-//       <Stack.Screen
-//         // options={{ headerShown: false }}
-//         name="HistoryBookings"
-//         component={HistoryBookings}
-//       ></Stack.Screen>
-//     </Stack.Navigator>
-//   );
-// }
 
 export default function TabNavigator() {
   const { likes, favoriteCars } = useContext(UsersContext);
@@ -188,11 +175,7 @@ const tabBarVisibility = (route) => {
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Home";
   //   console.log(routeName);
 
-  if (
-    routeName == "Home" ||
-    routeName == "CarsByBrand" ||
-    routeName == "HistoryBookings"
-  ) {
+  if (routeName == "Home" || routeName == "CarsByBrand") {
     return "flex";
   }
   return "none";

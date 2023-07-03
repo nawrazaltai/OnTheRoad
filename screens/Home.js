@@ -17,42 +17,16 @@ import * as SplashScreen from "expo-splash-screen";
 import Searchbar from "../components/Searchbar";
 import TrendingBrands from "../components/TrendingBrands";
 import PopularCars from "../components/PopularCars";
-import HistoryBookings from "./HistoryBookings";
+import Header from "../components/Header";
 
 export default function Home({ navigation }) {
   const { firstName, getCars, logout, allCars, shuffledCars } =
     useContext(UsersContext);
   // const [location, setLocation] = useState();
-  const [lat, setLat] = useState(25.276987);
-  const [long, setLong] = useState(55.296249);
-  const [city, setCity] = useState("");
-  const [countryCode, setCountryCode] = useState("");
 
   function capitalFirstLetter(name) {
     return name?.charAt(0).toUpperCase() + name?.slice(1);
   }
-
-  const getAddress = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("Access to Location denied");
-    }
-
-    // const location = await Location.getCurrentPositionAsync({
-    //   accuracy: Location.Accuracy.Highest,
-    //   maximumAge: 10000,
-    // });
-    // setLocation(location);
-    // console.log(location);
-
-    const loc = await Location.reverseGeocodeAsync({
-      latitude: lat,
-      longitude: long,
-    });
-    setCity(loc[0].city);
-    setCountryCode(loc[0].isoCountryCode);
-    // console.log(loc[0].isoCountryCode);
-  };
 
   // useEffect(() => {
   //   async function prepare() {
@@ -68,7 +42,6 @@ export default function Home({ navigation }) {
   });
 
   useEffect(() => {
-    getAddress();
     async function Prepare() {
       await SplashScreen.preventAutoHideAsync();
     }
@@ -88,23 +61,13 @@ export default function Home({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Header />
       <ScrollView
         nestedScrollEnabled={true}
         keyboardShouldPersistTaps="handled"
+        style={styles.scrollview_container}
       >
-        <View style={styles.top_div}>
-          <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <MenuIcon name="menu-outline" size={38} color={"black"} />
-          </TouchableOpacity>
-          <View style={styles.location_view}>
-            <LocationIcon name="location" size={20} color={"#32928c"} />
-            <Text style={styles.location_text}>
-              {city}, {countryCode}
-            </Text>
-          </View>
-          <UserCircle name="user-circle" size={38} color="gray" />
-        </View>
-        <View>
+        <View style={styles.welcome_text_view}>
           <Text style={styles.welcome_text}>
             Hello {capitalFirstLetter(firstName)},
           </Text>
@@ -129,26 +92,25 @@ export default function Home({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  // container: {
+  //   // flex: 1,
+  //   paddingHorizontal: 10,
+  //   backgroundColor: "#F2F5F7",
+  // },
+  scrollview_container: {
     // flex: 1,
     paddingHorizontal: 10,
     backgroundColor: "#F2F5F7",
-  },
-  top_div: {
-    flexDirection: "row",
-    // width: "100%",
-    // paddingVertical: 20,
-    paddingTop: 20,
-    paddingBottom: 0,
-    alignItems: "center",
-    justifyContent: "space-between",
-    fontFamily: "MontserratRegular",
+    marginBottom: 90,
   },
   welcome_text: {
     marginTop: 20,
     paddingLeft: 5,
     fontSize: 24,
     fontFamily: "MontserratRegular",
+  },
+  welcome_text_view: {
+    marginTop: -10,
   },
   find_car_text: {
     marginTop: -2,

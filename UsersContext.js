@@ -1,5 +1,6 @@
 import { useState, createContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from "expo-location";
 
 const UsersContext = createContext();
 
@@ -14,6 +15,32 @@ function UsersProvider({ children }) {
   const [allCars, setAllCars] = useState([]);
   const [shuffledCars, setShuffledCars] = useState([]);
   const [allBrands, setAllBrands] = useState();
+  const [lat, setLat] = useState(25.276987);
+  const [long, setLong] = useState(55.296249);
+  const [city, setCity] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+
+  const getAddress = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Access to Location denied");
+    }
+
+    // const location = await Location.getCurrentPositionAsync({
+    //   accuracy: Location.Accuracy.Highest,
+    //   maximumAge: 10000,
+    // });
+    // setLocation(location);
+    // console.log(location);
+
+    const loc = await Location.reverseGeocodeAsync({
+      latitude: lat,
+      longitude: long,
+    });
+    setCity(loc[0].city);
+    setCountryCode(loc[0].isoCountryCode);
+    // console.log(loc[0].isoCountryCode);
+  };
 
   async function registerUser(newUser) {
     const response = await fetch("http://10.0.2.2:4000/users", {
@@ -155,6 +182,7 @@ function UsersProvider({ children }) {
 
   useEffect(() => {
     isLoggedIn();
+    getAddress();
     getCars();
     getBrands();
     handleLiked();
@@ -218,6 +246,8 @@ function UsersProvider({ children }) {
         logout,
         firstName,
         lastName,
+        city,
+        countryCode,
         token,
         email,
         checkUserAvailability,

@@ -94,8 +94,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 34,
-    marginTop: 20,
-    fontFamily: "MontserratSemiBold",
+    letterSpacing: 1,
+    marginTop: 10,
+    fontFamily: "MontserratRegular",
     textAlign: "center",
     borderBottomWidth: 1,
     borderBottomColor: "lightgray",
