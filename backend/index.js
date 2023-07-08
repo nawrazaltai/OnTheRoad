@@ -128,26 +128,60 @@ app.get("/cars", (req, res) => {
   });
 });
 
-app.get("/brands", (req, res) => {
-  connection.query("SELECT * FROM brands", [], (err, result) => {
-    if (err) {
-      res.sendStatus(500);
-    }
-    res.json({ brands: result });
-  });
-});
+app.post("/bookings", (req, res) => {
+  // console.log(req.body);
+  const booking = req.body.booking;
+  const selected_dates = req.body.booked_dates;
+  // console.log(selected_dates);
+  const { car_id, start_date, end_date, total_days, total_price, renter } =
+    booking;
 
-app.post("/cars/brand", (req, res) => {
-  const brand = req.body.brand;
+  // console.log(car_id, start_date, end_date, total_days, total_price, renter);
 
+  let results = [];
   connection.query(
-    "SELECT * FROM cars WHERE brand = ?",
-    [brand],
+    "INSERT INTO bookings(car_id, start_date, end_date, total_days, total_price, rented_by) VALUES (?,?,?,?,?,?)",
+    [car_id, start_date, end_date, total_days, total_price, renter],
     (err, result) => {
       if (err) {
         res.sendStatus(500);
+        // console.log(err);
+      } else {
+        // console.log(result);
+        const bookingId = result.insertId;
+        for (let i = 0; i < selected_dates.length; i++) {
+          let date = selected_dates[i];
+          connection.query(
+            "INSERT INTO booked_dates (booking_id, car_id, date) VALUES (?,?,?)",
+            [bookingId, car_id, date],
+            (err, result) => {
+              if (err) {
+                res.sendStatus(500);
+              } else {
+                results.push(result);
+              }
+            }
+          );
+        }
       }
-      res.json({ brand: result });
+      res.json({ bookingDetails: results });
+    }
+  );
+});
+
+app.post("/bookings/dates", (req, res) => {
+  console.log(req.body);
+  const { car_id } = req.body;
+
+  connection.query(
+    "SELECT date from booked_dates WHERE car_id = ?",
+    [car_id],
+    (err, result) => {
+      if (err) {
+        res.sendStatus(500);
+      } else {
+        res.json(result);
+      }
     }
   );
 });

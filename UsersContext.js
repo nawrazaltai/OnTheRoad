@@ -5,7 +5,7 @@ import * as Location from "expo-location";
 const UsersContext = createContext();
 
 function UsersProvider({ children }) {
-  //   const [users, setUsers] = useState({});
+  const [userId, setUserId] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -101,19 +101,6 @@ function UsersProvider({ children }) {
       }
     }
     setAllBrands(uniqueBrands);
-
-    // const response = await fetch("http://10.0.2.2:4000/brands", {
-    //   // 10.0.2.2:3000
-    //   method: "GET",
-    //   mode: "cors",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    //   // body: JSON.stringify(newUser),
-    // });
-    // const content = await response.json();
-    // setAllBrands(content.brands);
   }
 
   async function checkUserAvailability(email) {
@@ -131,6 +118,23 @@ function UsersProvider({ children }) {
     }
   }
 
+  async function car_booking(booking, booked_dates) {
+    // console.log(booked_dates);
+    const result = await fetch("http://10.0.2.2:4000/bookings", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ booking, booked_dates }),
+    }).then((res) => res.json());
+
+    // if (result?.emailCheck) {
+    //   return true;
+    // }
+  }
+
   async function login(userInput) {
     const response = await fetch("http://10.0.2.2:4000/login", {
       method: "POST",
@@ -146,7 +150,9 @@ function UsersProvider({ children }) {
       setLastName(content.data.last_name);
       setEmail(content.data.email);
       setToken(content.token);
+      console.log(content);
       AsyncStorage.setItem("token", content.token);
+      AsyncStorage.setItem("userId", content.data.id.toString());
       AsyncStorage.setItem("firstName", content.data.first_name);
       AsyncStorage.setItem("lastName", content.data.last_name);
       AsyncStorage.setItem("email", content.data.email);
@@ -156,6 +162,8 @@ function UsersProvider({ children }) {
   const logout = () => {
     setToken(null);
     AsyncStorage.removeItem("token");
+    setUserId(null);
+    AsyncStorage.removeItem("userId");
   };
 
   const isLoggedIn = async () => {
@@ -168,6 +176,8 @@ function UsersProvider({ children }) {
       setLastName(last_name);
       const email = await AsyncStorage.getItem("email");
       setEmail(email);
+      const userId = await AsyncStorage.getItem("userId");
+      setUserId(userId);
       // const favorites = await AsyncStorage.getItem("favoriteCars");
       // const res = JSON.parse(favorites);
       // console.log("RESULT", favorites);
@@ -246,6 +256,7 @@ function UsersProvider({ children }) {
         logout,
         firstName,
         lastName,
+        userId,
         city,
         countryCode,
         token,
@@ -258,6 +269,7 @@ function UsersProvider({ children }) {
         allBrands,
         resetLikes,
         shuffledCars,
+        car_booking,
       }}
     >
       {children}
