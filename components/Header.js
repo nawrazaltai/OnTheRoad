@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UsersContext } from "../UsersContext";
@@ -20,7 +21,7 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 
 const Header = () => {
   const navigation = useNavigation();
-  const { city, countryCode } = useContext(UsersContext);
+  const { city, countryCode, getAddress } = useContext(UsersContext);
 
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
@@ -48,10 +49,16 @@ const Header = () => {
         <MenuIcon name="menu-outline" size={38} color={"black"} />
       </TouchableOpacity>
       <View style={styles.location_view}>
-        <LocationIcon name="location" size={20} color={"#32928c"} />
-        <Text style={styles.location_text}>
-          {city}, {countryCode}
-        </Text>
+        <TouchableOpacity onPress={() => getAddress()}>
+          <LocationIcon name="location" size={20} color={"#32928c"} />
+        </TouchableOpacity>
+        {city && countryCode ? (
+          <Text style={styles.location_text}>
+            {city}, {countryCode}
+          </Text>
+        ) : (
+          <ActivityIndicator size="small" color={"#32928c"} />
+        )}
       </View>
       <UserCircle name="user-circle" size={38} color="gray" />
     </View>

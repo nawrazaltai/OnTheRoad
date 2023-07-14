@@ -170,7 +170,7 @@ app.post("/bookings", (req, res) => {
 });
 
 app.post("/bookings/dates", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { car_id } = req.body;
 
   connection.query(

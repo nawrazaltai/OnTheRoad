@@ -68,8 +68,8 @@ export default function TabNavigator() {
         tabBarStyle: {
           backgroundColor: "#32928c",
           height: 70,
-          borderTopColor: "orange",
-          borderTopWidth: 2,
+          // borderTopColor: "orange",
+          // borderTopWidth: 2,
           backgroundColor: "#32928c",
         },
         tabBarLabelStyle: {
@@ -80,6 +80,7 @@ export default function TabNavigator() {
         },
         tabBarInactiveTintColor: "#fff",
         tabBarActiveTintColor: "orange",
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tab.Screen
@@ -89,8 +90,8 @@ export default function TabNavigator() {
           title: "Home",
           tabBarStyle: {
             height: 70,
-            borderTopColor: "orange",
-            borderTopWidth: 2,
+            // borderTopColor: "orange",
+            // borderTopWidth: 2,
             display: tabBarVisibility(route),
             backgroundColor: "#32928c",
           },
@@ -122,14 +123,14 @@ export default function TabNavigator() {
               size={36}
               color={color}
               style={{
-                marginBottom: 50,
+                // marginBottom: 20,
                 backgroundColor: "#32928c",
                 textAlign: "center",
                 textAlignVertical: "center",
-                borderWidth: 2,
-                borderColor: "orange",
-                width: 68,
-                height: 68,
+                // borderWidth: 6,
+                // borderColor: "#F2F5F7",
+                // width: 72,
+                // height: 72,
                 borderRadius: 50,
                 overflow: "visible",
               }}

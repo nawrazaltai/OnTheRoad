@@ -1,6 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
+// import { Permissons } from "expo";
 
 const UsersContext = createContext();
 
@@ -15,30 +16,100 @@ function UsersProvider({ children }) {
   const [allCars, setAllCars] = useState([]);
   const [shuffledCars, setShuffledCars] = useState([]);
   const [allBrands, setAllBrands] = useState();
-  const [lat, setLat] = useState(25.276987);
-  const [long, setLong] = useState(55.296249);
+  const [lat, setLat] = useState();
+  const [long, setLong] = useState();
   const [city, setCity] = useState("");
   const [countryCode, setCountryCode] = useState("");
+  const [res, setRes] = useState();
+  const [location, setLocation] = useState();
+
+  const getCity = async () => {
+    // let res = await fetch(
+    //   "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+    //     latitude +
+    //     "," +
+    //     longitude +
+    //     "&key=" +
+    //     "AIzaSyBY47Sdg05zygqBx2Z7LmNi3q5vtGB-mbw"
+    // )
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     JSON.stringify(responseJson);
+    //     // var stateName = responseJson.results[0].address_components.filter(
+    //     //   (x) =>
+    //     //     x.types.filter((t) => t == "administrative_area_level_1").length > 0
+    //     // )[0];
+    //     // console.log(stateName);
+    //     // console.log(responseJson.results[0].address_components[5]);
+    //     // console.log(responseJson.results[0].address_components[4]?.short_name);
+    //   });
+    // const loc = await Location.reverseGeocodeAsync({
+    //   latitude: lat,
+    //   longitude: long,
+    // });
+    // // console.log(loc);
+    // setCity(loc[0]?.city);
+    // setCountryCode(loc[0]?.isoCountryCode);
+    // console.log("RES:", res);
+    // setCity(res.results[0]?.address_components[3]?.long_name);
+    // setCountryCode(res.results[0]?.address_components[5]?.short_name);
+    // setCity(loc[0]?.city);
+    // setCountryCode(loc[0]?.isoCountryCode);
+  };
 
   const getAddress = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       setErrorMsg("Access to Location denied");
+      return;
     }
+    // Location.setGoogleApiKey("AIzaSyBY47Sdg05zygqBx2Z7LmNi3q5vtGB-mbw");
 
-    // const location = await Location.getCurrentPositionAsync({
-    //   accuracy: Location.Accuracy.Highest,
-    //   maximumAge: 10000,
-    // });
-    // setLocation(location);
+    let locations = await Location.getCurrentPositionAsync({
+      // enableHighAccuracy: false,
+      timeout: 10000,
+      maximumAge: 0,
+    });
     // console.log(location);
+    // setLocation(locations);
+    setLat(locations.coords.latitude);
+    setLong(locations.coords.longitude);
 
     const loc = await Location.reverseGeocodeAsync({
-      latitude: lat,
-      longitude: long,
+      latitude: locations.coords.latitude,
+      longitude: locations.coords.longitude,
     });
-    setCity(loc[0].city);
-    setCountryCode(loc[0].isoCountryCode);
+    setCity(loc[0]?.city);
+    setCountryCode(loc[0]?.isoCountryCode);
+
+    // setLat(location.coords.latitude);
+    // setLong(location.coords.longitude);
+    // console.log(typeof lat, typeof long);
+
+    // console.log(location);
+    // let res = await fetch(
+    //   "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+    //     lat +
+    //     "," +
+    //     long +
+    //     "&key=" +
+    //     "AIzaSyBY47Sdg05zygqBx2Z7LmNi3q5vtGB-mbw"
+    // ).then((response) => response.json());
+    // setCity(res.results[0]?.address_components[3]?.long_name);
+    // setCountryCode(res.results[0]?.address_components[5]?.short_name);
+
+    // const test = await Location.geocodeAsync("Ängstugevägen 5 Nyköping");
+    // console.log("test", test);
+    // setLat(location.coords.latitude);
+    // setLong(location.coords.longitude);
+
+    // Geolocation.getCurrentPosition((pos) => {
+    //   const res = pos.coords;
+    //   console.log(res);
+    // }).catch((err) => {
+    //   console.log(err);
+    // });
+
     // console.log(loc[0].isoCountryCode);
   };
 
@@ -190,6 +261,10 @@ function UsersProvider({ children }) {
     saveFavorites();
   }, [likes]);
 
+  // useEffect(() => {
+  //  getCity();
+  // }, [lat, long]);
+
   useEffect(() => {
     isLoggedIn();
     getAddress();
@@ -258,6 +333,8 @@ function UsersProvider({ children }) {
         lastName,
         userId,
         city,
+        lat,
+        long,
         countryCode,
         token,
         email,
@@ -270,6 +347,7 @@ function UsersProvider({ children }) {
         resetLikes,
         shuffledCars,
         car_booking,
+        getAddress,
       }}
     >
       {children}
