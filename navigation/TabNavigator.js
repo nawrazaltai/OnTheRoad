@@ -18,6 +18,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import HistoryBookings from "../screens/HistoryBookings";
 import Payment from "../screens/Payment";
+import MapScreen from "../screens/MapScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -34,6 +35,19 @@ export const HomeStack = () => {
       <Stack.Screen name="CarsByBrand" component={CarsByBrand}></Stack.Screen>
       <Stack.Screen name="History" component={HistoryBookings}></Stack.Screen>
       <Stack.Screen name="Payment" component={Payment}></Stack.Screen>
+    </Stack.Navigator>
+  );
+};
+
+export const FindStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        // options={{ headerShown: false }}
+        name="Find Us"
+        component={FindTheShop}
+      ></Stack.Screen>
+      <Stack.Screen name="MapScreen" component={MapScreen}></Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -141,9 +155,9 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Find"
-        component={FindTheShop}
+        component={FindStack}
         options={({ route }) => ({
-          title: "Find",
+          title: "Find Us",
           tabBarIcon: ({ color, size }) => (
             <Entypo name="location" size={25} color={color} />
           ),
@@ -156,7 +170,7 @@ export default function TabNavigator() {
         options={({ route }) => ({
           title: "Favorites",
           tabBarBadgeStyle: {
-            display: likes?.length !== 0 ? "flex" : "none",
+            display: likes?.length != 0 ? "flex" : "none",
             marginTop: 2,
             backgroundColor: "red",
             color: "#000",

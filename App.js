@@ -1,12 +1,19 @@
 import "react-native-gesture-handler";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState, useContext } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   createStackNavigator,
 } from "@react-navigation/native-stack";
-import { UsersProvider } from "./UsersContext";
+import { UsersContext, UsersProvider } from "./UsersContext";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
@@ -14,8 +21,6 @@ import AppNav from "./navigation/AppNav";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
-
-  // console.log(firstName);
 
   return (
     <NavigationContainer>

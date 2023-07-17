@@ -70,7 +70,7 @@ function UsersProvider({ children }) {
       timeout: 10000,
       maximumAge: 0,
     });
-    // console.log(location);
+    // console.log(locations);
     // setLocation(locations);
     setLat(locations.coords.latitude);
     setLong(locations.coords.longitude);
@@ -79,8 +79,10 @@ function UsersProvider({ children }) {
       latitude: locations.coords.latitude,
       longitude: locations.coords.longitude,
     });
+    // console.log(loc);
     setCity(loc[0]?.city);
     setCountryCode(loc[0]?.isoCountryCode);
+    // console.log(countryCode);
 
     // setLat(location.coords.latitude);
     // setLong(location.coords.longitude);
@@ -221,7 +223,7 @@ function UsersProvider({ children }) {
       setLastName(content.data.last_name);
       setEmail(content.data.email);
       setToken(content.token);
-      console.log(content);
+      // console.log(content);
       AsyncStorage.setItem("token", content.token);
       AsyncStorage.setItem("userId", content.data.id.toString());
       AsyncStorage.setItem("firstName", content.data.first_name);

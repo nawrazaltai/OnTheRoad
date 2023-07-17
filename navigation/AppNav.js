@@ -11,10 +11,8 @@ import {
 
 export default function AppNav() {
   const Stack = createNativeStackNavigator();
-
   const { token } = useContext(UsersContext);
 
-  // return token !== null || token !== undefined ? <AppStack /> : <AuthStack />;
   return token ? <AppStack /> : <AuthStack />;
 
   {

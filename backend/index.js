@@ -60,6 +60,7 @@ app.post("/users", (req, res) => {
           // );
         } else {
           res.send({ error: err.sqlMessage });
+          return;
           // console.log("Error:", err.sqlMessage);
         }
         // console.log(err);
@@ -89,6 +90,7 @@ app.post("/login", (req, res) => {
     (err, result) => {
       if (err) {
         res.sendStatus(500);
+        return;
       }
       if (result.length > 0) {
         // console.log(result[0].id);
@@ -113,6 +115,7 @@ app.post("/userAvailable", (req, res) => {
     (err, result) => {
       if (err) {
         res.sendStatus(500);
+        return;
       }
       res.status(200).json({ emailCheck: result[0]?.email });
     }
@@ -123,6 +126,7 @@ app.get("/cars", (req, res) => {
   connection.query("SELECT * FROM cars", [], (err, result) => {
     if (err) {
       res.sendStatus(500);
+      return;
     }
     res.json({ cars: result });
   });
