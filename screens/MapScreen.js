@@ -252,13 +252,21 @@ export default function MapScreen() {
           })}
         </View>
         <View style={styles.directions_view}>
-          <Text style={styles.directions_text}>FROM: {currentAddress}</Text>
-          <Text style={styles.directions_text}>TO: {DESTINATION.address} </Text>
           <Text style={styles.directions_text}>
-            DISTANCE: {distance.toFixed(1)?.toString()} KM
+            <Text style={{ fontFamily: "MontserratSemiBold" }}>FROM: </Text>{" "}
+            {currentAddress}
           </Text>
           <Text style={styles.directions_text}>
-            DURATION: {Math.round(duration)?.toString().slice(0, 3)} minutes
+            <Text style={{ fontFamily: "MontserratSemiBold" }}>TO: </Text>{" "}
+            {DESTINATION.address}{" "}
+          </Text>
+          <Text style={styles.directions_text}>
+            <Text style={{ fontFamily: "MontserratSemiBold" }}>DISTANCE: </Text>{" "}
+            {distance.toFixed(1)?.toString()} km
+          </Text>
+          <Text style={styles.directions_text}>
+            <Text style={{ fontFamily: "MontserratSemiBold" }}>DURATION: </Text>{" "}
+            {Math.round(duration)?.toString().slice(0, 3)} minutes
           </Text>
         </View>
       </View>
