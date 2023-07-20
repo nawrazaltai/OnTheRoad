@@ -16,7 +16,7 @@ import * as SplashScreen from "expo-splash-screen";
 import IonIcons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Payment from "./Payment";
+// import Payment from "./CompleteRentScreen";
 
 export default function CarDetails({ navigation, route }) {
   const { likes, handleLikeEvent, resetLikes } = useContext(UsersContext);

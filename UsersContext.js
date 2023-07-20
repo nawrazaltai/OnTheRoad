@@ -22,6 +22,7 @@ function UsersProvider({ children }) {
   const [countryCode, setCountryCode] = useState("");
   const [res, setRes] = useState();
   const [location, setLocation] = useState();
+  const [paymentValid, setPaymentValid] = useState(false);
 
   const getCity = async () => {
     // let res = await fetch(
@@ -276,7 +277,7 @@ function UsersProvider({ children }) {
   }, []);
 
   function handleLikeEvent(id) {
-    // let res = [];
+    let res = [];
 
     if (likes) {
       res = [...likes];
@@ -350,6 +351,8 @@ function UsersProvider({ children }) {
         shuffledCars,
         car_booking,
         getAddress,
+        paymentValid,
+        setPaymentValid,
       }}
     >
       {children}

@@ -17,8 +17,9 @@ import FindTheShop from "../screens/FindTheShopScreen";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import HistoryBookings from "../screens/HistoryBookings";
-import Payment from "../screens/Payment";
+import Payment from "../screens/CompleteRentScreen";
 import MapScreen from "../screens/MapScreen";
+import Test from "../screens/Test";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -117,7 +118,7 @@ export default function TabNavigator() {
 
       <Tab.Screen
         name="Explore"
-        component={ExploreScreen}
+        component={Test}
         options={({ route }) => ({
           title: "Explore",
           tabBarIcon: ({ color, size }) => (
@@ -176,7 +177,7 @@ export default function TabNavigator() {
             color: "#000",
             fontWeight: 500,
           },
-          tabBarBadge: likes?.length > 0 && likes?.length,
+          tabBarBadge: likes?.length > 0 ? likes.length : null,
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="heart" size={25} color={color} />
           ),

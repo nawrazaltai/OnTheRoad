@@ -195,7 +195,7 @@ export default function MapScreen() {
       <View
         style={{
           position: "absolute",
-          bottom: 90,
+          bottom: 70,
           height: 205,
           width: "100%",
           alignSelf: "center",

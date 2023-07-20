@@ -17,18 +17,131 @@ import * as SplashScreen from "expo-splash-screen";
 import IonIcons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { Calendar, LocaleConfig } from "react-native-calendars";
+import { LocaleConfig } from "react-native-calendars";
 import moment from "moment";
 import CalendarPicker from "react-native-calendar-picker";
+import StepIndicator from "react-native-step-indicator";
+import Payment from "../components/Payment";
+import Swiper from "react-native-swiper";
+import Calendar from "../components/Calendar";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-export default function Payment({ navigation, route }) {
+const secondIndicatorStyles = {
+  stepIndicatorSize: 40,
+  currentStepIndicatorSize: 50,
+  separatorStrokeWidth: 2,
+  currentStepStrokeWidth: 3,
+  stepStrokeCurrentColor: "#fe7013",
+  stepStrokeWidth: 3,
+  separatorStrokeFinishedWidth: 4,
+  stepStrokeFinishedColor: "#fe7013",
+  stepStrokeUnFinishedColor: "#aaaaaa",
+  separatorFinishedColor: "#fe7013",
+  separatorUnFinishedColor: "#aaaaaa",
+  stepIndicatorFinishedColor: "#fe7013",
+  stepIndicatorUnFinishedColor: "#ffffff",
+  stepIndicatorCurrentColor: "#ffffff",
+  stepIndicatorLabelFontSize: 13,
+  currentStepIndicatorLabelFontSize: 13,
+  stepIndicatorLabelCurrentColor: "#fe7013",
+  stepIndicatorLabelFinishedColor: "#ffffff",
+  stepIndicatorLabelUnFinishedColor: "#aaaaaa",
+  labelColor: "#999999",
+  labelSize: 13,
+  currentStepLabelColor: "#fe7013",
+};
+
+export default function CompleteRent({ navigation, route }) {
   const { item } = route?.params;
-  const { allBrands, car_booking, userId } = useContext(UsersContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { allBrands, car_booking, userId, paymentValid, setPaymentValid } =
+    useContext(UsersContext);
   const [brandLogo, setBrandLogo] = useState("");
+  const [datesConfirmed, setDatesConfirmed] = useState(false);
   const today = new Date(Date.now()).toISOString().slice(0, 10);
-  //   console.log(new Date().toLocaleString());
-  //   let date = moment();
-  // const today = date.format("DD/MM/YYYY");
+
+  const labels = ["Select car", "Select dates", "Payment", "Confirm"];
+  const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
+    const iconConfig = {
+      name: "feed",
+      color: stepStatus === "finished" ? "#ffffff" : "#fe7013",
+      size: 20,
+    };
+    switch (position) {
+      case 0: {
+        iconConfig.name = "check";
+        // } else {
+        //   iconConfig.name = "shopping-cart";
+        // }
+        break;
+      }
+      case 1: {
+        if (datesConfirmed && currentPage !== position) {
+          //   stepStatus = "finished";
+          iconConfig.name = "check";
+        } else {
+          iconConfig.name = "date-range";
+        }
+        break;
+      }
+      case 2: {
+        if (paymentValid && currentPage !== position) {
+          iconConfig.name = "check";
+        } else {
+          iconConfig.name = "payment";
+        }
+        break;
+      }
+      case 3: {
+        iconConfig.name = "assessment";
+        break;
+      }
+      case 4: {
+        iconConfig.name = "track-changes";
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    return iconConfig;
+  };
+
+  const onStepPress = (position) => {
+    // console.log(stepStatus);
+    if (position == 0) {
+      return;
+    }
+    setCurrentPage(position);
+  };
+
+  const renderViewPagerPage = (data) => {
+    return (
+      <View key={data} style={styles.page}>
+        <Text>{data}</Text>
+      </View>
+    );
+  };
+
+  const renderStepIndicator = (params) => (
+    <MaterialIcons {...getStepIndicatorIconConfig(params)} />
+  );
+
+  const renderLabel = ({ position, label, currentPosition }) => {
+    return (
+      <Text
+        style={
+          position === currentPosition
+            ? styles.stepLabelSelected
+            : styles.stepLabel
+        }
+      >
+        {label}
+      </Text>
+    );
+  };
+
+  // const [position, setPosition] = useState(0);
 
   const [fetchedDisabledDates, setFetchedDisabledDates] = useState([]);
   async function FetchDisabledDates(car_id) {
@@ -50,24 +163,13 @@ export default function Payment({ navigation, route }) {
     setFetchedDisabledDates(res);
   }
 
-  //   const [fetchedDisabledDates, setFetchedDisabledDates] = useState([
-  //     "2023-07-10",
-  //     "2023-07-11",
-  //     "2023-07-12",
-  //     "2023-07-13",
-  //     "2023-07-14",
-  //     "2023-07-15",
-  //     "2023-07-19",
-  //     "2023-08-24",
-  //   ]);
-
   const [selectedStartDate, setSelectedStartDate] = useState(today);
   const [selectedEndDate, setSelectedEndDate] = useState(today);
   const [totalDays, setTotalDays] = useState(0);
   const [disabledConfirmBtn, setDisabledConfirmBtn] = useState(true);
   const [confirmError, setConfirmError] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [datesConfirmed, setDatesConfirmed] = useState(false);
+  // const [modalVisible, setModalVisible] = useState(false);
+  // const [datesConfirmed, setDatesConfirmed] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
 
   useEffect(() => {
@@ -102,7 +204,14 @@ export default function Payment({ navigation, route }) {
     days(selectedStartDate, selectedEndDate);
     totalDays < 1 ? setDisabledConfirmBtn(true) : setDisabledConfirmBtn(false);
   }, [selectedStartDate, selectedEndDate, totalDays]);
-  //   console.log("total", totalDays);
+
+  useEffect(() => {
+    if (datesConfirmed) {
+      setCurrentPage((currentPage) => currentPage + 1);
+    } else {
+      setCurrentPage((currentPage) => 1);
+    }
+  }, [datesConfirmed]);
 
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
@@ -126,39 +235,40 @@ export default function Payment({ navigation, route }) {
     SplashScreen.hideAsync();
   }
 
-  function onDateChange(date, type) {
-    if (type === "END_DATE") {
-      setSelectedEndDate(date);
-    } else {
-      setSelectedStartDate(date);
-      setSelectedEndDate(null);
-    }
-  }
+  // function onDateChange(date, type) {
+  //   if (type === "END_DATE") {
+  //     setSelectedEndDate(date);
+  //   } else {
+  //     setSelectedStartDate(date);
+  //     setSelectedEndDate(null);
+  //   }
+  // }
 
-  function getPreviousDay(selected) {
-    let nearestArr = [];
-    for (let i = 0; i < fetchedDisabledDates.length; i++) {
-      let date = new Date(fetchedDisabledDates[i]);
-      if (date > selected) {
-        nearestArr.push(date);
-        break;
-      }
-    }
-    let diff = Math.round((nearestArr[0] - selected) / (1000 * 60 * 60 * 24));
-    return diff;
-  }
+  // function getPreviousDay(selected) {
+  //   let nearestArr = [];
+  //   for (let i = 0; i < fetchedDisabledDates.length; i++) {
+  //     let date = new Date(fetchedDisabledDates[i]);
+  //     if (date > selected) {
+  //       nearestArr.push(date);
+  //       break;
+  //     }
+  //   }
+  //   let diff = Math.round((nearestArr[0] - selected) / (1000 * 60 * 60 * 24));
+  //   return diff;
+  // }
 
-  const onConfirm = () => {
-    if (disabledConfirmBtn) {
-      setConfirmError("Please select an end date");
-    } else {
-      console.log(totalDays);
-      getDates(selectedStartDate, selectedEndDate);
-      setDatesConfirmed(true);
-      setModalVisible(false);
-    }
-  };
+  // const onConfirm = () => {
+  //   if (disabledConfirmBtn) {
+  //     setConfirmError("Please select an end date");
+  //   } else {
+  //     // console.log(totalDays);
+  //     getDates(selectedStartDate, selectedEndDate);
+  //     setDatesConfirmed(true);
+  //     setModalVisible(false);
+  //   }
+  // };
 
+  // GET ALL DATES BETWEEN START AND END DATE
   function getDates(startDate, stopDate) {
     let dateArray = [];
     let res = [...fetchedDisabledDates];
@@ -173,6 +283,63 @@ export default function Payment({ navigation, route }) {
     // setFetchedDisabledDates(res);
     // return dateArray;
   }
+
+  const customStyles = {
+    stepIndicatorSize: 35,
+    currentStepIndicatorSize: 40,
+    separatorStrokeWidth: 3,
+    currentStepStrokeWidth: 3,
+    stepStrokeCurrentColor: "#fe7013",
+    stepStrokeWidth: 3,
+    stepStrokeFinishedColor: "#fe7013",
+    stepStrokeUnFinishedColor: "#aaaaaa",
+    separatorFinishedColor: "#fe7013",
+    separatorUnFinishedColor: "#aaaaaa",
+    stepIndicatorFinishedColor: "#fe7013",
+    stepIndicatorUnFinishedColor: "#ffffff",
+    stepIndicatorCurrentColor: "#ffffff",
+    stepIndicatorLabelFontSize: 13,
+    currentStepIndicatorLabelFontSize: 13,
+    stepIndicatorLabelCurrentColor: "#fe7013",
+    stepIndicatorLabelFinishedColor: "#ffffff",
+    stepIndicatorLabelUnFinishedColor: "#aaaaaa",
+    labelColor: "#999999",
+    labelSize: 13,
+    currentStepLabelColor: "#fe7013",
+  };
+
+  // const onStepPress = (position) => {
+  //   setPosition(position);
+  // };
+
+  // const onCancelDates = () => {
+  //   setModalVisible(!modalVisible);
+  //   setSelectedStartDate(today);
+  //   setSelectedEndDate(today);
+  // };
+
+  const PAGES = [
+    "",
+    <Calendar
+      fetchedDisabledDates={fetchedDisabledDates}
+      today={today}
+      selectedStartDate={selectedStartDate}
+      setSelectedStartDate={setSelectedStartDate}
+      selectedEndDate={selectedEndDate}
+      setSelectedEndDate={setSelectedEndDate}
+      totalDays={totalDays}
+      setTotalDays={setTotalDays}
+      datesConfirmed={datesConfirmed}
+      setDatesConfirmed={setDatesConfirmed}
+      setSelectedDays={setSelectedDays}
+      selectedDays={selectedDays}
+      getDates={getDates}
+      disabledConfirmBtn={disabledConfirmBtn}
+      setDisabledConfirmBtn={setDisabledConfirmBtn}
+    />,
+    <Payment />,
+    "CONFIRM",
+  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -221,13 +388,43 @@ export default function Payment({ navigation, route }) {
           />
         </View>
       </View>
-
-      {!datesConfirmed ? (
+      <View style={{ marginTop: 20 }}>
+        <StepIndicator
+          labels={labels}
+          currentPosition={currentPage}
+          customStyles={customStyles}
+          stepCount={labels.length}
+          renderStepIndicator={renderStepIndicator}
+          onPress={onStepPress}
+        />
+      </View>
+      {/* {!datesConfirmed && (
         <>
-          <View style={styles.date_view}>
+        <Calendar
+              fetchedDisabledDates={fetchedDisabledDates}
+              today={today}
+              selectedStartDate={selectedStartDate}
+              setSelectedStartDate={setSelectedStartDate}
+              selectedEndDate={selectedEndDate}
+              setSelectedEndDate={setSelectedEndDate}
+              totalDays={totalDays}
+              setTotalDays={setTotalDays}
+              datesConfirmed={datesConfirmed}
+              setDatesConfirmed={setDatesConfirmed}
+              setSelectedDays={setSelectedDays}
+              selectedDays={selectedDays}
+              onConfirm={onConfirm}
+              disabledConfirmBtn={disabledConfirmBtn}
+              setDisabledConfirmBtn={setDisabledConfirmBtn}
+              onCancelDates={onCancelDates}
+            />
+          </> )} */}
+
+      {/* <View style={styles.date_view}>
             <Text style={styles.date_title}>Select dates</Text>
-          </View>
-          <TouchableOpacity
+          </View> */}
+
+      {/* <TouchableOpacity
             disabled={datesConfirmed}
             style={styles.open_calendar_btn}
             onPress={() => {
@@ -250,91 +447,109 @@ export default function Payment({ navigation, route }) {
                 size={22}
               />
             )}
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          {modalVisible && (
-            <View
-              style={{
-                borderWidth: 1,
-                width: "95%",
-                marginLeft: 12,
-                borderRadius: 5,
-                marginTop: 4,
-                backgroundColor: "#fff",
-                padding: 10,
-                zIndex: 10,
-              }}
-            >
-              <CalendarPicker
-                minDate={today}
-                width={380}
-                height={400}
-                initialDate={today}
-                allowRangeSelection={true}
-                previousTitle="<<"
-                nextTitle=">>"
-                selectedDayColor="#32928c"
-                onDateChange={onDateChange}
-                maxRangeDuration={[
-                  {
-                    date: new Date(selectedStartDate),
-                    maxDuration: getPreviousDay(new Date(selectedStartDate)),
-                  },
-                ]}
-                disabledDates={fetchedDisabledDates}
-              />
+      {/* {modalVisible && (
+            <Calendar
+              fetchedDisabledDates={fetchedDisabledDates}
+              today={today}
+              selectedStartDate={selectedStartDate}
+              setSelectedStartDate={setSelectedStartDate}
+              selectedEndDate={selectedEndDate}
+              setSelectedEndDate={setSelectedEndDate}
+              totalDays={totalDays}
+              setTotalDays={setTotalDays}
+              datesConfirmed={datesConfirmed}
+              setDatesConfirmed={setDatesConfirmed}
+              setSelectedDays={setSelectedDays}
+              selectedDays={selectedDays}
+              onConfirm={onConfirm}
+              disabledConfirmBtn={disabledConfirmBtn}
+              setDisabledConfirmBtn={setDisabledConfirmBtn}
+              onCancelDates={onCancelDates}
+            /> */}
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginTop: 10,
-                  justifyContent: "center",
-                  width: "100%",
-                  gap: 15,
-                  borderTopWidth: 2,
-                  borderTopColor: "lightgray",
-                  paddingTop: 10,
-                }}
-              >
-                <TouchableOpacity
-                  style={
-                    disabledConfirmBtn
-                      ? styles.disabled_confirm_btn
-                      : styles.confirm_btn
-                  }
-                  onPress={() => onConfirm()}
-                  // disabled={disabledConfirmBtn}
-                >
-                  <Text
-                    style={
-                      disabledConfirmBtn
-                        ? styles.disabled_confirm_btn
-                        : styles.confirm_btn
-                    }
-                  >
-                    Confirm
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.cancel_btn}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                    setSelectedStartDate(today);
-                    setSelectedEndDate(today);
-                  }}
-                >
-                  <Text style={styles.cancel_btn}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-        </>
+      {/* // <View
+            //   style={{
+            //     borderWidth: 1,
+            //     width: "95%",
+            //     marginLeft: 12,
+            //     borderRadius: 5,
+            //     marginTop: 4,
+            //     backgroundColor: "#fff",
+            //     padding: 10,
+            //     zIndex: 10,
+            //   }}
+            // >
+            //    <CalendarPicker
+            //     minDate={today}
+            //     width={380}
+            //     height={400}
+            //     initialDate={today}
+            //     allowRangeSelection={true}
+            //     previousTitle="<<"
+            //     nextTitle=">>"
+            //     selectedDayColor="#32928c"
+            //     onDateChange={onDateChange}
+            //     maxRangeDuration={[
+            //       {
+            //         date: new Date(selectedStartDate),
+            //         maxDuration: getPreviousDay(new Date(selectedStartDate)),
+            //       },
+            //     ]}
+            //     disabledDates={fetchedDisabledDates}
+            //   />
+
+            //   <View
+            //     style={{
+            //       flexDirection: "row",
+            //       marginTop: 10,
+            //       justifyContent: "center",
+            //       width: "100%",
+            //       gap: 15,
+            //       borderTopWidth: 2,
+            //       borderTopColor: "lightgray",
+            //       paddingTop: 10,
+            //     }}
+            //   >
+            //     <TouchableOpacity
+            //       style={
+            //         disabledConfirmBtn
+            //           ? styles.disabled_confirm_btn
+            //           : styles.confirm_btn
+            //       }
+            //       onPress={() => onConfirm()}
+            //       // disabled={disabledConfirmBtn}
+            //     >
+            //       <Text
+            //         style={
+            //           disabledConfirmBtn
+            //             ? styles.disabled_confirm_btn
+            //             : styles.confirm_btn
+            //         }
+            //       >
+            //         Confirm
+            //       </Text>
+            //     </TouchableOpacity>
+            //     <TouchableOpacity
+            //       style={styles.cancel_btn}
+            //       onPress={() => {
+            //         setModalVisible(!modalVisible);
+            //         setSelectedStartDate(today);
+            //         setSelectedEndDate(today);
+            //       }}
+            //     >
+            //       <Text style={styles.cancel_btn}>Cancel</Text>
+            //     </TouchableOpacity>
+            //   </View>
+            // </View>
+          // )}
+        {/* </> 
       ) : (
         <>
           <View style={styles.date_view}>
             <Text style={styles.date_title}>Selected dates</Text>
           </View>
-
           <View
             style={{
               //   borderWidth: 1,
@@ -464,21 +679,27 @@ export default function Payment({ navigation, route }) {
                 setSelectedStartDate(today);
                 setSelectedEndDate(today);
                 setDatesConfirmed(false);
+                setModalVisible(true);
               }}
               style={{
                 borderWidth: 1,
+                borderColor: "black",
                 width: "100%",
                 alignItems: "center",
                 paddingVertical: 8,
                 borderRadius: 4,
-                backgroundColor: "#FF6666",
+                // backgroundColor: "#32928c",
+                // backgroundColor: "#FF6666",
               }}
             >
-              <Text style={{ fontFamily: "MontserratSemiBold", color: "#000" }}>
-                Cancel selected {totalDays > 1 ? "dates" : "date"}
+              <Text
+                style={{ fontFamily: "MontserratSemiBold", color: "#32928c" }}
+              >
+                Change selected {totalDays > 1 ? "dates" : "date"}
               </Text>
             </TouchableOpacity>
           </View>
+          {/* // INSERT BOOKING TO DB *
           <TouchableOpacity
             onPress={() => {
               //   console.log(
@@ -516,9 +737,26 @@ export default function Payment({ navigation, route }) {
             }}
           >
             <Text>INSERT TEST</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> 
         </>
       )}
+          */}
+      {/* {datesConfirmed && <Payment />} */}
+      <Swiper
+        style={{ flexGrow: 1 }}
+        loop={false}
+        index={currentPage}
+        autoplay={false}
+        // pagingEnabled={false}
+        scrollEnabled={false}
+        showsPagination={false}
+        // showsButtons
+        onIndexChanged={(page) => {
+          setCurrentPage(page);
+        }}
+      >
+        {PAGES.map((page) => renderViewPagerPage(page))}
+      </Swiper>
     </SafeAreaView>
   );
 }
