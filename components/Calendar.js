@@ -23,7 +23,6 @@ import CalendarPicker from "react-native-calendar-picker";
 
 export default function Calendar(props) {
   const [modalVisible, setModalVisible] = useState(false);
-
   const {
     fetchedDisabledDates,
     today,
@@ -40,6 +39,8 @@ export default function Calendar(props) {
     getDates,
     disabledConfirmBtn,
     setDisabledConfirmBtn,
+    moveToNextStepManually,
+    paymentValid,
   } = props;
 
   function onDateChange(date, type) {
@@ -90,6 +91,9 @@ export default function Calendar(props) {
         // marginTop: 4,
         // backgroundColor: "#fff",
         // padding: 10,
+        // borderTopColor: "lightgray",
+        // width: "100%",
+        marginHorizontal: 10,
         zIndex: 10,
       }}
     >
@@ -130,28 +134,24 @@ export default function Calendar(props) {
           </View>
           <View
             style={{
-              //   borderWidth: 1,
-              marginHorizontal: 8,
-              borderRadius: 4,
               flexDirection: "column",
               alignItems: "center",
-              backgroundColor: "#FFF",
-              height: 180,
               borderRadius: 10,
-              elevation: 10,
+              alignSelf: "center",
+              marginHorizontal: 10,
               paddingHorizontal: 10,
               paddingBottom: 20,
-              marginTop: -10,
+              marginTop: -15,
               justifyContent: "space-between",
-              borderWidth: 2,
+              borderWidth: 1,
               borderColor: "#32928c",
+              backgroundColor: "#FFF",
             }}
           >
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                // backgroundColor: "#FFF",
                 height: 120,
                 // borderRadius: 10,
                 // elevation: 10,
@@ -252,30 +252,77 @@ export default function Calendar(props) {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedStartDate(today);
-                setSelectedEndDate(today);
-                setDatesConfirmed(false);
-                setModalVisible(true);
-              }}
+            <View
               style={{
-                borderWidth: 1,
-                borderColor: "black",
-                width: "100%",
-                alignItems: "center",
-                paddingVertical: 8,
-                borderRadius: 4,
-                // backgroundColor: "#32928c",
-                // backgroundColor: "#FF6666",
+                // flexDirection: "row",
+                width: 370,
+                gap: 10,
+                justifyContent: "space-between",
               }}
             >
-              <Text
-                style={{ fontFamily: "MontserratSemiBold", color: "#32928c" }}
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedStartDate(today);
+                  setSelectedEndDate(today);
+                  setDatesConfirmed(false);
+                  setModalVisible(true);
+                }}
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#32928c",
+                  alignItems: "center",
+                  paddingVertical: 8,
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  //   width: "40%",
+                  // backgroundColor: "#32928c",
+                  backgroundColor: "white",
+                }}
               >
-                Change selected {totalDays > 1 ? "dates" : "date"}
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    fontFamily: "MontserratSemiBold",
+                    color: "#32928c",
+                    color: "#000",
+                    textAlignVertical: "center",
+                  }}
+                >
+                  Change selected {totalDays > 1 ? "dates" : "date"}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  // width: "100%",
+                  alignItems: "center",
+                  paddingVertical: 8,
+                  borderRadius: 4,
+                  paddingHorizontal: 10,
+                  backgroundColor: "#32928c",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  //   backgroundColor: "orange",
+                }}
+                onPress={() => moveToNextStepManually()}
+              >
+                <Text
+                  style={{
+                    fontFamily: "MontserratSemiBold",
+                    color: "#FFF",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {paymentValid
+                    ? "Continue to confirmation"
+                    : "Continue to payment"}
+                </Text>
+                <MaterialCommunityIcons
+                  name="arrow-right-thin"
+                  size={22}
+                  color={"white"}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </>
       )}
@@ -346,9 +393,6 @@ export default function Calendar(props) {
               style={styles.cancel_btn}
               onPress={() => {
                 onCancelDates();
-                // setModalVisible(!modalVisible);
-                // setSelectedStartDate(today);
-                // setSelectedEndDate(today);
               }}
             >
               <Text style={styles.cancel_btn}>Cancel</Text>

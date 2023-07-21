@@ -21,8 +21,9 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CarDetails from "../screens/CarDetails";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 
-export default function Payment() {
+export default function Payment(props) {
   const { paymentValid, setPaymentValid } = useContext(UsersContext);
+  const { moveToNextStepManually } = props;
 
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
@@ -51,6 +52,9 @@ export default function Payment() {
       <Text style={styles.method_title}>Payment</Text>
       <TouchableOpacity onPress={() => setPaymentValid(!paymentValid)}>
         <Text>Done</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => moveToNextStepManually()}>
+        <Text>Next</Text>
       </TouchableOpacity>
     </View>
   );

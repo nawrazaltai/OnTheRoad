@@ -60,7 +60,12 @@ export default function CompleteRent({ navigation, route }) {
   const [datesConfirmed, setDatesConfirmed] = useState(false);
   const today = new Date(Date.now()).toISOString().slice(0, 10);
 
-  const labels = ["Select car", "Select dates", "Payment", "Confirm"];
+  const labels = [
+    "Select car",
+    "Select dates",
+    "Payment",
+    "Overview & Confirm",
+  ];
   const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
     const iconConfig = {
       name: "feed",
@@ -70,9 +75,6 @@ export default function CompleteRent({ navigation, route }) {
     switch (position) {
       case 0: {
         iconConfig.name = "check";
-        // } else {
-        //   iconConfig.name = "shopping-cart";
-        // }
         break;
       }
       case 1: {
@@ -141,7 +143,12 @@ export default function CompleteRent({ navigation, route }) {
     );
   };
 
-  // const [position, setPosition] = useState(0);
+  const moveToNextStepManually = () => {
+    if (paymentValid && currentPage == 1) {
+      setCurrentPage((currentPage) => currentPage + 2);
+    }
+    setCurrentPage((currentPage) => currentPage + 1);
+  };
 
   const [fetchedDisabledDates, setFetchedDisabledDates] = useState([]);
   async function FetchDisabledDates(car_id) {
@@ -205,13 +212,13 @@ export default function CompleteRent({ navigation, route }) {
     totalDays < 1 ? setDisabledConfirmBtn(true) : setDisabledConfirmBtn(false);
   }, [selectedStartDate, selectedEndDate, totalDays]);
 
-  useEffect(() => {
-    if (datesConfirmed) {
-      setCurrentPage((currentPage) => currentPage + 1);
-    } else {
-      setCurrentPage((currentPage) => 1);
-    }
-  }, [datesConfirmed]);
+  // useEffect(() => {
+  //   if (datesConfirmed) {
+  //     setCurrentPage((currentPage) => currentPage + 1);
+  //   } else {
+  //     setCurrentPage((currentPage) => 1);
+  //   }
+  // }, [datesConfirmed]);
 
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
@@ -308,16 +315,6 @@ export default function CompleteRent({ navigation, route }) {
     currentStepLabelColor: "#fe7013",
   };
 
-  // const onStepPress = (position) => {
-  //   setPosition(position);
-  // };
-
-  // const onCancelDates = () => {
-  //   setModalVisible(!modalVisible);
-  //   setSelectedStartDate(today);
-  //   setSelectedEndDate(today);
-  // };
-
   const PAGES = [
     "",
     <Calendar
@@ -336,8 +333,10 @@ export default function CompleteRent({ navigation, route }) {
       getDates={getDates}
       disabledConfirmBtn={disabledConfirmBtn}
       setDisabledConfirmBtn={setDisabledConfirmBtn}
+      moveToNextStepManually={moveToNextStepManually}
+      paymentValid={paymentValid}
     />,
-    <Payment />,
+    <Payment moveToNextStepManually={moveToNextStepManually} />,
     "CONFIRM",
   ];
 
@@ -353,7 +352,7 @@ export default function CompleteRent({ navigation, route }) {
         <Text style={styles.complete_text_title}>Complete your rent</Text>
       </View>
 
-      <View style={styles.car_info}>
+      {/* <View style={styles.car_info}>
         <View style={styles.car_info_left}>
           <Image
             style={{
@@ -387,8 +386,15 @@ export default function CompleteRent({ navigation, route }) {
             }}
           />
         </View>
-      </View>
-      <View style={{ marginTop: 20 }}>
+      </View> */}
+      <View
+        style={{
+          marginTop: 20,
+          borderBottomColor: "lightgray",
+          borderBottomWidth: 1,
+          marginHorizontal: 10,
+        }}
+      >
         <StepIndicator
           labels={labels}
           currentPosition={currentPage}
