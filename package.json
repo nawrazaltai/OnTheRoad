@@ -16,6 +16,7 @@
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/native-stack": "^6.9.12",
+    "@stripe/stripe-react-native": "0.23.3",
     "dotenv": "^16.3.1",
     "expo": "~48.0.18",
     "expo-app-loading": "^2.1.1",
@@ -46,6 +47,7 @@
     "react-native-step-indicator": "^1.0.3",
     "react-native-svg": "13.4.0",
     "react-native-swiper": "^1.6.0",
+    "react-native-timeline-flatlist": "^0.8.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.10",
     "yup": "^1.2.0"

@@ -25,31 +25,11 @@ import Payment from "../components/Payment";
 import Swiper from "react-native-swiper";
 import Calendar from "../components/Calendar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { StripeProvider } from "@stripe/stripe-react-native";
+// import { date } from "yup";
 
-const secondIndicatorStyles = {
-  stepIndicatorSize: 40,
-  currentStepIndicatorSize: 50,
-  separatorStrokeWidth: 2,
-  currentStepStrokeWidth: 3,
-  stepStrokeCurrentColor: "#fe7013",
-  stepStrokeWidth: 3,
-  separatorStrokeFinishedWidth: 4,
-  stepStrokeFinishedColor: "#fe7013",
-  stepStrokeUnFinishedColor: "#aaaaaa",
-  separatorFinishedColor: "#fe7013",
-  separatorUnFinishedColor: "#aaaaaa",
-  stepIndicatorFinishedColor: "#fe7013",
-  stepIndicatorUnFinishedColor: "#ffffff",
-  stepIndicatorCurrentColor: "#ffffff",
-  stepIndicatorLabelFontSize: 13,
-  currentStepIndicatorLabelFontSize: 13,
-  stepIndicatorLabelCurrentColor: "#fe7013",
-  stepIndicatorLabelFinishedColor: "#ffffff",
-  stepIndicatorLabelUnFinishedColor: "#aaaaaa",
-  labelColor: "#999999",
-  labelSize: 13,
-  currentStepLabelColor: "#fe7013",
-};
+const STRIPE_PUBLISH_KEY =
+  "pk_test_51NXi92K0mqoNcqHyu3eQUYhp3nvukXdbxYhztnK5x1mgrZKVhXRgrBPXvyRu1iOSmzkChUuxsXYba65pymGeMeNt00pMVc02rY";
 
 export default function CompleteRent({ navigation, route }) {
   const { item } = route?.params;
@@ -60,12 +40,7 @@ export default function CompleteRent({ navigation, route }) {
   const [datesConfirmed, setDatesConfirmed] = useState(false);
   const today = new Date(Date.now()).toISOString().slice(0, 10);
 
-  const labels = [
-    "Select car",
-    "Select dates",
-    "Payment",
-    "Overview & Confirm",
-  ];
+  const labels = ["Select car", "Select dates", "Details & Payment"];
   const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
     const iconConfig = {
       name: "feed",
@@ -87,19 +62,7 @@ export default function CompleteRent({ navigation, route }) {
         break;
       }
       case 2: {
-        if (paymentValid && currentPage !== position) {
-          iconConfig.name = "check";
-        } else {
-          iconConfig.name = "payment";
-        }
-        break;
-      }
-      case 3: {
-        iconConfig.name = "assessment";
-        break;
-      }
-      case 4: {
-        iconConfig.name = "track-changes";
+        iconConfig.name = "payment";
         break;
       }
       default: {
@@ -299,10 +262,13 @@ export default function CompleteRent({ navigation, route }) {
     stepStrokeCurrentColor: "#fe7013",
     stepStrokeWidth: 3,
     stepStrokeFinishedColor: "#fe7013",
+    stepStrokeFinishedColor: "#32928c",
     stepStrokeUnFinishedColor: "#aaaaaa",
     separatorFinishedColor: "#fe7013",
+    separatorFinishedColor: "#32928c",
     separatorUnFinishedColor: "#aaaaaa",
     stepIndicatorFinishedColor: "#fe7013",
+    stepIndicatorFinishedColor: "#32928c",
     stepIndicatorUnFinishedColor: "#ffffff",
     stepIndicatorCurrentColor: "#ffffff",
     stepIndicatorLabelFontSize: 13,
@@ -336,8 +302,18 @@ export default function CompleteRent({ navigation, route }) {
       moveToNextStepManually={moveToNextStepManually}
       paymentValid={paymentValid}
     />,
-    <Payment moveToNextStepManually={moveToNextStepManually} />,
-    "CONFIRM",
+    <StripeProvider publishableKey={STRIPE_PUBLISH_KEY}>
+      <Payment
+        moveToNextStepManually={moveToNextStepManually}
+        item={item}
+        brandLogo={brandLogo}
+        datesConfirmed={datesConfirmed}
+        selectedStartDate={selectedStartDate}
+        selectedEndDate={selectedEndDate}
+        totalDays={totalDays}
+      />
+      ,
+    </StripeProvider>,
   ];
 
   return (
@@ -349,44 +325,8 @@ export default function CompleteRent({ navigation, route }) {
         >
           <IonIcons name="chevron-back" color="gray" size={15} />
         </TouchableOpacity>
-        <Text style={styles.complete_text_title}>Complete your rent</Text>
+        <Text style={styles.complete_text_title}>Checkout</Text>
       </View>
-
-      {/* <View style={styles.car_info}>
-        <View style={styles.car_info_left}>
-          <Image
-            style={{
-              resizeMode: "contain",
-              //   width: "50%",
-              width: 80,
-              height: 60,
-              marginTop: 0,
-              marginLeft: 0,
-              //   backgroundColor: "red",
-            }}
-            source={{
-              uri: brandLogo,
-            }}
-          />
-          <Text style={styles.brand}>{item.brand}</Text>
-          <Text style={styles.model}>{item.model}</Text>
-        </View>
-        <View style={styles.image_view}>
-          <Image
-            style={{
-              resizeMode: "contain",
-              width: "100%",
-              height: 120,
-              marginTop: 0,
-              //   borderColor: "red",
-              // borderRadius: 50,
-            }}
-            source={{
-              uri: `${item.picture.toString()}`,
-            }}
-          />
-        </View>
-      </View> */}
       <View
         style={{
           marginTop: 20,

@@ -9,6 +9,9 @@ import {
   FlatList,
   StyleSheet,
   ScrollView,
+  Screen,
+  Alert,
+  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UsersContext } from "../UsersContext";
@@ -24,197 +27,86 @@ import Swiper from "react-native-swiper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Payment from "../components/Payment";
 import Calendar from "../components/Calendar";
-import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
+import { StripeProvider } from "@stripe/stripe-react-native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { CardField, useStripe } from "@stripe/stripe-react-native";
 
-const PAGES = ["Page 1", <Payment />, <Calendar />, "Page 4", "Page 5"];
-// const PAGES = [{component: "Page 1", stepStatus:  }, <Payment />, "Page 3", "Page 4", "Page 5"];
-
-const secondIndicatorStyles = {
-  stepIndicatorSize: 30,
-  currentStepIndicatorSize: 40,
-  separatorStrokeWidth: 2,
-  currentStepStrokeWidth: 3,
-  stepStrokeCurrentColor: "#fe7013",
-  stepStrokeWidth: 3,
-  separatorStrokeFinishedWidth: 4,
-  stepStrokeFinishedColor: "#fe7013",
-  stepStrokeUnFinishedColor: "#aaaaaa",
-  separatorFinishedColor: "#fe7013",
-  separatorUnFinishedColor: "#aaaaaa",
-  stepIndicatorFinishedColor: "#fe7013",
-  stepIndicatorUnFinishedColor: "#ffffff",
-  stepIndicatorCurrentColor: "#ffffff",
-  stepIndicatorLabelFontSize: 13,
-  currentStepIndicatorLabelFontSize: 13,
-  stepIndicatorLabelCurrentColor: "#fe7013",
-  stepIndicatorLabelFinishedColor: "#ffffff",
-  stepIndicatorLabelUnFinishedColor: "#aaaaaa",
-  labelColor: "#999999",
-  labelSize: 13,
-  currentStepLabelColor: "#fe7013",
-};
+// function CheckoutScreen() {}
 
 export default function Test() {
-  const [currentPage, setCurrentPage] = useState(0);
-  const { paymentValid, setPaymentValid } = useContext(UsersContext);
+  const navigation = useNavigation();
+  const { email, firstName, lastName } = useContext(UsersContext);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [loading, setLoading] = useState(false);
+  publishableKey =
+    "pk_test_51NXi92K0mqoNcqHyu3eQUYhp3nvukXdbxYhztnK5x1mgrZKVhXRgrBPXvyRu1iOSmzkChUuxsXYba65pymGeMeNt00pMVc02rY";
+  const userFullName = firstName + " " + lastName;
 
-  const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
-    const iconConfig = {
-      name: "feed",
-      color: stepStatus === "finished" ? "#ffffff" : "#fe7013",
-      size: 15,
+  const fetchPaymentSheetParams = async () => {
+    const response = await fetch(`http://10.0.2.2:4000/payment-sheet`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, fullName: userFullName }),
+    });
+    const { paymentIntent, ephemeralKey, customer } = await response.json();
+
+    return {
+      paymentIntent,
+      ephemeralKey,
+      customer,
     };
-    switch (position) {
-      case 0: {
-        iconConfig.name = "check";
-        // } else {
-        //   iconConfig.name = "shopping-cart";
-        // }
-        break;
-      }
-      case 1: {
-        if (paymentValid && currentPage !== position) {
-          //   stepStatus = "finished";
-          iconConfig.name = "check";
-        } else {
-          iconConfig.name = "location-on";
-        }
-        break;
-      }
-      case 2: {
-        if (paymentValid && currentPage !== position) {
-          iconConfig.name = "check";
-        } else {
-          iconConfig.name = "assessment";
-        }
-        break;
-      }
-      case 3: {
-        iconConfig.name = "payment";
-        break;
-      }
-      case 4: {
-        iconConfig.name = "track-changes";
-        break;
-      }
-      default: {
-        break;
-      }
+  };
+
+  const initializePaymentSheet = async () => {
+    const { paymentIntent, ephemeralKey, customer, publishableKey } =
+      await fetchPaymentSheetParams();
+
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "Example, Inc.",
+      customerId: customer,
+      customerEphemeralKeySecret: ephemeralKey,
+      paymentIntentClientSecret: paymentIntent,
+      // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+      //methods that complete payment after a delay, like SEPA Debit and Sofort.
+      allowsDelayedPaymentMethods: true,
+      defaultBillingDetails: {
+        name: userFullName,
+      },
+    });
+    if (!error) {
+      setLoading(true);
     }
-    return iconConfig;
   };
 
-  const onStepPress = (position, stepStatus) => {
-    console.log(stepStatus);
-    if (position == 0) {
-      return;
+  const openPaymentSheet = async () => {
+    const { error } = await presentPaymentSheet();
+    // console.log("click");
+
+    if (error) {
+      // Alert.alert(`Error code: ${error.code}`, error.message);
+      navigation.goBack();
+    } else {
+      Alert.alert("Thank you", "Your order is confirmed!");
+      navigation.goBack();
     }
-    setCurrentPage(position);
   };
 
-  const renderViewPagerPage = (data) => {
-    return (
-      <View key={data} style={styles.page}>
-        <Text>{data}</Text>
-      </View>
-    );
-  };
-
-  const renderStepIndicator = (params) => (
-    <MaterialIcons {...getStepIndicatorIconConfig(params)} />
-  );
-
-  const renderLabel = ({ position, label, currentPosition }) => {
-    return (
-      <Text
-        style={
-          position === currentPosition
-            ? styles.stepLabelSelected
-            : styles.stepLabel
-        }
-      >
-        {label}
-      </Text>
-    );
-  };
+  useEffect(() => {
+    initializePaymentSheet();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      {/* <View style={styles.stepIndicator}>
-        <StepIndicator
-          customStyles={firstIndicatorStyles}
-          currentPosition={currentPage}
-          labels={["Account", "Profile", "Band", "Membership", "Dashboard"]}
-          renderLabel={renderLabel}
-          onPress={onStepPress}
-        />
-      </View> */}
-      <View style={styles.stepIndicator}>
-        <StepIndicator
-          customStyles={secondIndicatorStyles}
-          currentPosition={currentPage}
-          onPress={onStepPress}
-          renderStepIndicator={renderStepIndicator}
-          labels={[
-            "Cart",
-            "Delivery Address",
-            "Order Summary",
-            "Payment Method",
-            "Track",
-          ]}
-        />
-      </View>
-      {/* <View style={styles.stepIndicator}>
-        <StepIndicator
-          stepCount={4}
-          customStyles={thirdIndicatorStyles}
-          currentPosition={currentPage}
-          onPress={onStepPress}
-          labels={["Approval", "Processing", "Shipping", "Delivery"]}
-        />
-      </View> */}
-      <Swiper
-        style={{ flexGrow: 1 }}
-        loop={false}
-        index={currentPage}
-        autoplay={false}
-        // pagingEnabled={false}
-        scrollEnabled={false}
-        showsPagination={false}
-        // showsButtons
-        onIndexChanged={(page) => {
-          setCurrentPage(page);
-        }}
-      >
-        {PAGES.map((page) => renderViewPagerPage(page))}
-      </Swiper>
+    <View style={{ alignSelf: "center", justifyContent: "center", flex: 1 }}>
+      <Button
+        variant="primary"
+        disabled={!loading}
+        title="Checkout"
+        onPress={openPaymentSheet}
+      />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-  stepIndicator: {
-    marginVertical: 50,
-  },
-  page: {
-    flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
-  },
-  stepLabel: {
-    fontSize: 12,
-    textAlign: "center",
-    fontWeight: "500",
-    color: "#999999",
-  },
-  stepLabelSelected: {
-    fontSize: 12,
-    textAlign: "center",
-    fontWeight: "500",
-    color: "#4aae4f",
-  },
-});
+// export { CheckoutScreen };

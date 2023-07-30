@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Dimensions,
   StyleSheet,
   ScrollView,
 } from "react-native";
@@ -20,10 +21,44 @@ import * as SplashScreen from "expo-splash-screen";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CarDetails from "../screens/CarDetails";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+const { width, height } = Dimensions.get("window");
+import Timeline from "react-native-timeline-flatlist";
 
 export default function Payment(props) {
   const { paymentValid, setPaymentValid } = useContext(UsersContext);
-  const { moveToNextStepManually } = props;
+  const {
+    moveToNextStepManually,
+    item,
+    brandLogo,
+    selectedEndDate,
+    selectedStartDate,
+    totalDays,
+    datesConfirmed,
+  } = props;
+  const [formattedStartDate, setFormattedStartDate] = useState("");
+  const [formattedEndDate, setFormattedEndDate] = useState("");
+
+  useEffect(() => {
+    if (datesConfirmed) {
+      setFormattedStartDate(selectedStartDate?.toISOString()?.slice(0, 10));
+      setFormattedEndDate(selectedEndDate?.toISOString()?.slice(0, 10));
+    }
+  }, [datesConfirmed]);
+
+  // let formatted_start_date = selectedStartDate?.toISOString().slice(0, 10);
+  // let formatted_end_date = selectedEndDate?.toISOString().slice(0, 10);
+
+  const datesTimeline = [
+    {
+      title: "pickup date".toUpperCase(),
+      description: formattedStartDate,
+    },
+    {
+      title: "return date".toUpperCase(),
+      description: formattedEndDate,
+    },
+  ];
 
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
@@ -37,7 +72,6 @@ export default function Payment(props) {
     }
     Prepare();
     // console.log("TODAY", selectedStartDate);
-
     // getCars();
   }, []);
 
@@ -48,131 +82,130 @@ export default function Payment(props) {
   }
 
   return (
-    <View style={styles.method_view}>
-      <Text style={styles.method_title}>Payment</Text>
-      <TouchableOpacity onPress={() => setPaymentValid(!paymentValid)}>
-        <Text>Done</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => moveToNextStepManually()}>
-        <Text>Next</Text>
-      </TouchableOpacity>
+    <View
+      style={{
+        paddingHorizontal: 15,
+        width: width,
+      }}
+    >
+      <Text style={styles.method_title}>Rent Details</Text>
+      <View style={styles.car_info}>
+        <View style={styles.image_view}>
+          <Image
+            style={{
+              resizeMode: "contain",
+              width: "90%",
+              height: "100%",
+              marginTop: 0,
+              //   borderColor: "red",
+              // borderRadius: 50,
+            }}
+            source={{
+              uri: `${item.picture.toString()}`,
+            }}
+          />
+        </View>
+        <View style={styles.car_info_right}>
+          <View>
+            <Text style={styles.model}>
+              {item.model} {item.year}
+            </Text>
+            <Text style={styles.brand}>{item.brand}</Text>
+            {/* <Text style={styles.model}>{item.year}</Text> */}
+          </View>
+        </View>
+      </View>
+      {datesConfirmed && (
+        <View style={{ marginTop: 10 }}>
+          <Timeline
+            data={datesTimeline}
+            showTime={false}
+            circleColor="#32928c"
+            innerCircle="dot"
+            lineColor="#32928c"
+          />
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    minHeight: "100%",
-    backgroundColor: "#F2F5F7",
-    // backgroundColor: "white",
-  },
   method_view: {
+    // marginTop: 40,
     marginVertical: 20,
-    marginHorizontal: 12,
+    marginHorizontal: 15,
+    // minWidth: "100%",
   },
   method_title: {
     fontFamily: "MontserratSemiBold",
     fontSize: 20,
+    // marginHorizontal: 15,
+    marginTop: 20,
+    marginBottom: 2,
   },
-  disabled_confirm_btn: {
-    backgroundColor: "lightgray",
-    color: "gray",
-    width: 80,
-    height: 35,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-    textAlignVertical: "center",
-    borderRadius: 10,
-    fontSize: 16,
-    fontFamily: "MontserratRegular",
+  payment_method_view: {
+    // margin,
   },
-  confirm_btn: {
-    backgroundColor: "#32928c",
-    color: "#FFF",
-    width: 80,
-    height: 35,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-    textAlignVertical: "center",
-    borderRadius: 10,
-    fontSize: 16,
-    fontFamily: "MontserratRegular",
-  },
-  cancel_btn: {
-    backgroundColor: "#333",
-    color: "#fff",
-    borderWidth: 1,
-    width: 80,
-    height: 35,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-    textAlignVertical: "center",
-    borderRadius: 10,
-    fontSize: 16,
-    fontFamily: "MontserratRegular",
-  },
-  confirm_error: {
-    color: "red",
-  },
-  top_view: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    marginVertical: 25,
-    // marginBottom: 15,
-  },
-  complete_text_title: {
+  payment_method_text: {
     fontFamily: "MontserratSemiBold",
-    fontSize: 18,
-  },
-  go_back_btn: {
-    position: "absolute",
-    left: 20,
-    top: -8,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "gray",
-    width: 40,
-    height: 40,
-    backgroundColor: "#FFF",
+    fontSize: 16,
+    marginTop: 10,
   },
   car_info: {
-    marginHorizontal: 10,
     flexDirection: "row",
-    justifyContent: "space-around",
-    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderTopColor: "#32928c",
+    padding: 0,
+    gap: 8,
+    // borderRadius: 5,
+    // borderBottomWidth: 1,
     // paddingBottom: 10,
-    marginTop: 10,
-    borderColor: "gray",
+    // borderColor: "gray",
     // backgroundColor: "#F2F5F7",
   },
-  car_info_left: {
+  car_info_right: {
     height: "100%",
-    width: "50%",
-    alignItems: "center",
-    alignItems: "flex-start",
+    marginTop: 15,
+    gap: 4,
+    // width: "50%",
+    // alignItems: "center",
+    // justifyContent: "space-around",
     // borderWidth: 1,
     // borderColor: "yellow",
   },
   image_view: {
-    width: "50%",
+    //width: "55%",
+    width: 100,
     height: "100%",
-    // borderWidth: 1,
+    height: 100,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+    borderColor: "lightgray",
+    marginTop: 15,
+    backgroundColor: "#FFF",
+    elevation: 5,
     // borderColor: "lightblue",
   },
   brand: {
+    // fontFamily: "MontserratSemiBold",
+    // fontSize: 18,
+    fontFamily: "MontserratRegular",
+    fontSize: 16,
+    letterSpacing: 0.9,
+  },
+  model: {
     fontFamily: "MontserratSemiBold",
     fontSize: 18,
-    paddingLeft: 5,
+  },
+  date_view: {
+    marginVertical: 20,
+    marginHorizontal: 15,
+  },
+  date_title: {
+    fontFamily: "MontserratSemiBold",
+    fontSize: 20,
   },
 });

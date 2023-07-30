@@ -5,12 +5,15 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import Stripe from "stripe";
 
 const app = express();
 const PORT = 4000;
+dotenv.config();
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 app.use(bodyParser.json());
 app.use(cookieParser());
-dotenv.config();
 
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -26,6 +29,42 @@ app.use(
     // origin: "http://10.0.2.2:3000",
   })
 );
+
+// PAYMENY ENDPOINT
+app.post("/payment-sheet", async (req, res) => {
+  // console.log(req.body);
+  // Use an existing Customer ID if this is a returning customer.
+  const customer = await stripe.customers.create({
+    email: req.body.email,
+    name: req.body.fullName,
+  });
+  const ephemeralKey = await stripe.ephemeralKeys?.create(
+    { customer: customer.id },
+    { apiVersion: "2022-11-15" }
+  );
+  const paymentIntent = await stripe.paymentIntents?.create({
+    payment_method_types: ["card"],
+    amount: 1099,
+    currency: "usd",
+    customer: customer.id,
+    metadata: {
+      car: "",
+      start_date: "",
+      end_date: "",
+      total_days: "",
+    },
+    // automatic_payment_methods: {
+    //   enabled: true,
+    // },
+  });
+
+  res.json({
+    paymentIntent: paymentIntent?.client_secret,
+    ephemeralKey: ephemeralKey?.secret,
+    customer: customer?.id,
+    publishableKey: process.env.STRIPE_PUBLISH_KEY,
+  });
+});
 
 // REGISTER
 app.post("/users", (req, res) => {

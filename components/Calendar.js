@@ -61,7 +61,6 @@ export default function Calendar(props) {
     if (disabledConfirmBtn) {
       setConfirmError("Please select an end date");
     } else {
-      // console.log(totalDays);
       getDates(selectedStartDate, selectedEndDate);
       setDatesConfirmed(true);
       setModalVisible(false);
@@ -153,13 +152,6 @@ export default function Calendar(props) {
                 flexDirection: "row",
                 alignItems: "center",
                 height: 120,
-                // borderRadius: 10,
-                // elevation: 10,
-                // paddingHorizontal: 10,
-                // marginTop: -10,
-                // justifyContent: "space-between",
-                // borderWidth: 2,
-                // borderColor: "#32928c",
               }}
             >
               <View
