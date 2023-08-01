@@ -22,7 +22,11 @@ function UsersProvider({ children }) {
   const [countryCode, setCountryCode] = useState("");
   const [res, setRes] = useState();
   const [location, setLocation] = useState();
-  const [paymentValid, setPaymentValid] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   const getCity = async () => {
     // let res = await fetch(
@@ -351,8 +355,8 @@ function UsersProvider({ children }) {
         shuffledCars,
         car_booking,
         getAddress,
-        paymentValid,
-        setPaymentValid,
+        isModalVisible,
+        toggleModal,
       }}
     >
       {children}

@@ -24,22 +24,18 @@ import CalendarPicker from "react-native-calendar-picker";
 import StepIndicator from "react-native-step-indicator";
 import Swiper from "react-native-swiper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Payment from "../components/Payment";
-import Calendar from "../components/Calendar";
+import Calendar from "./Calendar";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { CardField, useStripe } from "@stripe/stripe-react-native";
 import Modal from "react-native-modal";
 
-export default function Test() {
+export default function ModalWrapper({ children }) {
   const navigation = useNavigation();
-  const { email, firstName, lastName } = useContext(UsersContext);
+  const { email, firstName, lastName, isModalVisible, toggleModal } =
+    useContext(UsersContext);
 
-  const [isModalVisible, setModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+  //   const [isModalVisible, setModalVisible] = useState(false);
 
   return (
     <SafeAreaView>
@@ -61,7 +57,8 @@ export default function Test() {
             alignSelf: "center",
           }}
         >
-          <Text>Hello!</Text>
+          <Text style={{ color: "black", fontSize: 22 }}>{children}</Text>
+          {/* <Text>Hej</Text> */}
 
           <Button title="Hide modal" onPress={toggleModal} />
         </View>
@@ -69,5 +66,3 @@ export default function Test() {
     </SafeAreaView>
   );
 }
-
-// export { CheckoutScreen };

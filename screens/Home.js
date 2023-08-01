@@ -18,22 +18,21 @@ import Searchbar from "../components/Searchbar";
 import TrendingBrands from "../components/TrendingBrands";
 import PopularCars from "../components/PopularCars";
 import Header from "../components/Header";
+import ModalWrapper from "../components/ModalWrapper";
 
-export default function Home({ navigation }) {
-  const { firstName, getCars, logout, allCars, shuffledCars } =
+export default function Home({ navigation, route }) {
+  const { firstName, getCars, logout, allCars, shuffledCars, isModalVisible } =
     useContext(UsersContext);
+  const [message, setMessage] = useState("");
   // const [location, setLocation] = useState();
 
   function capitalFirstLetter(name) {
     return name?.charAt(0).toUpperCase() + name?.slice(1);
   }
 
-  // useEffect(() => {
-  //   async function prepare() {
-  //     await SplashScreen.preventAutoHideAsync();
-  //   }
-  //   prepare();
-  // }, []);
+  useEffect(() => {
+    setMessage(route?.params?.message);
+  }, [route?.params]);
 
   const [loaded] = useFonts({
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
@@ -87,6 +86,11 @@ export default function Home({ navigation }) {
           <Text>History</Text>
         </TouchableOpacity> */}
       </ScrollView>
+      {isModalVisible ? (
+        <ModalWrapper>
+          <Text>{message}</Text>
+        </ModalWrapper>
+      ) : null}
     </SafeAreaView>
   );
 }

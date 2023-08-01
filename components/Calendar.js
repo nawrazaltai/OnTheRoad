@@ -23,6 +23,7 @@ import CalendarPicker from "react-native-calendar-picker";
 
 export default function Calendar(props) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [confirmError, setConfirmError] = useState("");
   const {
     fetchedDisabledDates,
     today,
@@ -50,6 +51,7 @@ export default function Calendar(props) {
       setSelectedStartDate(date);
       setSelectedEndDate(null);
     }
+    setConfirmError("");
   }
   const onCancelDates = () => {
     setModalVisible(!modalVisible);
@@ -59,7 +61,7 @@ export default function Calendar(props) {
 
   const onConfirm = () => {
     if (disabledConfirmBtn) {
-      setConfirmError("Please select an end date");
+      setConfirmError("Please select start and end date before confirming.");
     } else {
       getDates(selectedStartDate, selectedEndDate);
       setDatesConfirmed(true);
@@ -329,7 +331,8 @@ export default function Calendar(props) {
             marginVertical: 6,
             marginLeft: 12,
             borderRadius: 8,
-            paddingVertical: 12,
+            paddingTop: 12,
+            paddingBottom: 10,
           }}
         >
           <CalendarPicker
@@ -390,6 +393,22 @@ export default function Calendar(props) {
               <Text style={styles.cancel_btn}>Cancel</Text>
             </TouchableOpacity>
           </View>
+          {confirmError != "" ? (
+            <View>
+              <Text
+                style={{
+                  fontFamily: "MontserratRegular",
+                  color: "red",
+                  textAlign: "center",
+                  paddingVertical: 5,
+                }}
+              >
+                {confirmError}
+              </Text>
+            </View>
+          ) : (
+            ""
+          )}
         </View>
       )}
     </View>

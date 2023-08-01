@@ -33,6 +33,8 @@ app.use(
 // PAYMENY ENDPOINT
 app.post("/payment-sheet", async (req, res) => {
   // console.log(req.body);
+  const { price } = req.body;
+  // console.log(req.body);
   // Use an existing Customer ID if this is a returning customer.
   const customer = await stripe.customers.create({
     email: req.body.email,
@@ -44,7 +46,7 @@ app.post("/payment-sheet", async (req, res) => {
   );
   const paymentIntent = await stripe.paymentIntents?.create({
     payment_method_types: ["card"],
-    amount: 1099,
+    amount: price,
     currency: "usd",
     customer: customer.id,
     metadata: {

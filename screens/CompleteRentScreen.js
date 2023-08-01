@@ -310,6 +310,7 @@ export default function CompleteRent({ navigation, route }) {
         datesConfirmed={datesConfirmed}
         selectedStartDate={selectedStartDate}
         selectedEndDate={selectedEndDate}
+        selectedDays={selectedDays}
         totalDays={totalDays}
       />
       ,
@@ -329,10 +330,12 @@ export default function CompleteRent({ navigation, route }) {
       </View>
       <View
         style={{
-          marginTop: 20,
+          marginTop: 5,
+          marginBottom: 12,
           borderBottomColor: "lightgray",
           borderBottomWidth: 1,
           marginHorizontal: 10,
+          paddingBottom: 5,
         }}
       >
         <StepIndicator

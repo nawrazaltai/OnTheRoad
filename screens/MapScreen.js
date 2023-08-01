@@ -218,6 +218,7 @@ export default function MapScreen() {
             overflow: "hidden",
             borderRightWidth: 1,
             borderRightColor: "#32928c",
+            marginBottom: 10,
             // marginVertical: 5,
             // backgroundColor: "#F2F5F7",
             // borderTopLeftRadius: 8,
@@ -298,6 +299,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: "space-around",
     backgroundColor: "#FFF",
+    marginBottom: 10,
     // gap: 8,
     // width: ,
   },
@@ -311,7 +313,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// CODE BELOW IS IF WE WANT USER TO CHANGE STARTING POSITION
+// CODE BELOW IS IF WE WANT USER TO BE ABLE TO CHANGE STARTING POSITION
 /* <View
         style={{
           position: "absolute",
