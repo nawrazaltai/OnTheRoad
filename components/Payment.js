@@ -121,9 +121,9 @@ export default function Payment(props) {
       }
     } else {
       // car_booking(booking, selectedDays);
-      navigation.navigate("Home", { message: "Success" });
-      toggleModal(!isModalVisible);
-      // Alert.alert("Thank you", "Your order is confirmed!");
+      // navigation.navigate("Home", { message: "Success" });
+      // toggleModal(!isModalVisible);
+      navigation.navigate("Confirming", { message: "Success" });
     }
   };
 

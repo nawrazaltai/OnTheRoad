@@ -86,11 +86,12 @@ export default function Home({ navigation, route }) {
           <Text>History</Text>
         </TouchableOpacity> */}
       </ScrollView>
-      {isModalVisible ? (
+
+      {/* {isModalVisible ? (
         <ModalWrapper>
           <Text>{message}</Text>
         </ModalWrapper>
-      ) : null}
+      ) : null} */}
     </SafeAreaView>
   );
 }

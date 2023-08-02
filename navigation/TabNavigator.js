@@ -20,6 +20,7 @@ import HistoryBookings from "../screens/HistoryBookings";
 import Payment from "../screens/CompleteRentScreen";
 import MapScreen from "../screens/MapScreen";
 import Test from "../screens/Test";
+import ConfirmingOrder from "../screens/ConfirmingOrderScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -36,6 +37,10 @@ export const HomeStack = () => {
       <Stack.Screen name="CarsByBrand" component={CarsByBrand}></Stack.Screen>
       <Stack.Screen name="History" component={HistoryBookings}></Stack.Screen>
       <Stack.Screen name="Payment" component={Payment}></Stack.Screen>
+      <Stack.Screen
+        name="Confirming"
+        component={ConfirmingOrder}
+      ></Stack.Screen>
     </Stack.Navigator>
   );
 };

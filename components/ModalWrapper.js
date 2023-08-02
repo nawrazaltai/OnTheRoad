@@ -16,21 +16,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { UsersContext } from "../UsersContext";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import IonIcons from "react-native-vector-icons/Ionicons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import moment from "moment";
-import CalendarPicker from "react-native-calendar-picker";
-import StepIndicator from "react-native-step-indicator";
-import Swiper from "react-native-swiper";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Calendar from "./Calendar";
-import { StripeProvider } from "@stripe/stripe-react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import { CardField, useStripe } from "@stripe/stripe-react-native";
 import Modal from "react-native-modal";
+import LottieView from "lottie-react-native";
 
-export default function ModalWrapper({ children }) {
+export default function ModalWrapper({
+  children,
+  title,
+  bottomText,
+  backgroundColor,
+  navigateTo,
+}) {
   const navigation = useNavigation();
   const { email, firstName, lastName, isModalVisible, toggleModal } =
     useContext(UsersContext);
@@ -39,7 +35,7 @@ export default function ModalWrapper({ children }) {
 
   return (
     <SafeAreaView>
-      <Button title="Show modal" onPress={toggleModal} />
+      {/* <Button title="Show modal" onPress={toggleModal} /> */}
 
       <Modal
         isVisible={isModalVisible}
@@ -49,18 +45,71 @@ export default function ModalWrapper({ children }) {
       >
         <View
           style={{
-            width: 300,
-            height: 300,
+            width: 320,
+            height: 480,
+            // padding: 30,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "white",
             alignSelf: "center",
+            borderRadius: 10,
+            backgroundColor: backgroundColor,
+            borderWidth: 3,
+            borderColor: "white",
+            zIndex: 10,
           }}
         >
-          <Text style={{ color: "black", fontSize: 22 }}>{children}</Text>
-          {/* <Text>Hej</Text> */}
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 27,
+              fontFamily: "MontserratRegular",
+            }}
+          >
+            {title}
+          </Text>
+          <LottieView
+            source={require("../assets/checkmark.json")}
+            autoPlay
+            loop={false}
+            speed={0.75}
+            style={{ alignSelf: "center", height: 230 }}
+          />
+          <Text
+            style={{
+              color: "white",
+              fontSize: 22,
+              fontFamily: "MontserratRegular",
+              paddingHorizontal: 20,
+              textAlign: "center",
+              // textAlign: "center",
+            }}
+          >
+            {bottomText}
+          </Text>
 
-          <Button title="Hide modal" onPress={toggleModal} />
+          <TouchableOpacity
+            style={{
+              marginTop: 20,
+              backgroundColor: "#fff",
+              paddingHorizontal: 25,
+              paddingVertical: 12,
+              borderRadius: 30,
+            }}
+            onPress={() => {
+              navigation.navigate(navigateTo);
+              toggleModal(false);
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 17,
+                fontFamily: "MontserratRegular",
+                color: backgroundColor,
+              }}
+            >
+              Close
+            </Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     </SafeAreaView>
