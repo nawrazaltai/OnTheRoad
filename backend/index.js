@@ -36,19 +36,73 @@ app.post("/payment-sheet", async (req, res) => {
   const { price } = req.body;
   // console.log(req.body);
   // Use an existing Customer ID if this is a returning customer.
-  const customer = await stripe.customers.create({
+
+  const customers = await stripe.customers.list({
     email: req.body.email,
-    name: req.body.fullName,
   });
+  let customer;
+  if (customers.data.length < 1) {
+    customer = await stripe.customers.create({
+      email: req.body.email,
+      name: req.body.fullName,
+    });
+  } else {
+    customer = customers.data[0];
+  }
+
+  // return customer;
+
+  // const customer = customers?.data?.filter((c) => {
+  //   if (c.email !== req.body.email) {
+  //     await stripe.customers.create ({
+  //       email: req.body.email,
+  //       name: req.body.fullName})
+  //     }
+  //     else {
+  //       return customer
+  //     }
+  // });
+
+  // let customer;
+
+  // if (!filteredCustomer) {
+  //   return (customer = await stripe.customers.create({
+  //     email: req.body.email,
+  //     name: req.body.fullName,
+  //   }));
+  // }
+  // customer = filteredCustomer;
+
+  // console.log(customer);
+  // const customer = await stripe.customers.create({
+  //   email: req.body.email,
+  //   name: req.body.fullName,
+  // });
+
+  // const customers = await stripe.customers.list({});
+  // console.log("customers: ", customers.data.length);
+
+  // const customers = await stripe.customers.search({
+  //   query: `email: "${req.body.email}"`,
+  // });
+
+  // let customer;
+  // console.log("Customer: ", customers[0]);
+  // customer = customers[0];
+
   const ephemeralKey = await stripe.ephemeralKeys?.create(
-    { customer: customer.id },
+    { customer: customer?.id },
     { apiVersion: "2022-11-15" }
   );
   const paymentIntent = await stripe.paymentIntents?.create({
     payment_method_types: ["card"],
     amount: price,
     currency: "usd",
-    customer: customer.id,
+    customer: customer?.id,
+    // setup_future_usage: "on_session",
+    // automatic_payment_methods: {
+    //   enabled: true,
+    // },
     metadata: {
       car: "",
       start_date: "",
@@ -59,6 +113,8 @@ app.post("/payment-sheet", async (req, res) => {
     //   enabled: true,
     // },
   });
+
+  // console.log(customer.id);
 
   res.json({
     paymentIntent: paymentIntent?.client_secret,

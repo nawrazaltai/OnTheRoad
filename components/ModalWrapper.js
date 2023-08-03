@@ -26,11 +26,15 @@ export default function ModalWrapper({
   bottomText,
   backgroundColor,
   navigateTo,
+  animation,
 }) {
   const navigation = useNavigation();
   const { email, firstName, lastName, isModalVisible, toggleModal } =
     useContext(UsersContext);
 
+  useEffect(() => {
+    console.log(animation);
+  }, []);
   //   const [isModalVisible, setModalVisible] = useState(false);
 
   return (
@@ -68,7 +72,8 @@ export default function ModalWrapper({
             {title}
           </Text>
           <LottieView
-            source={require("../assets/checkmark.json")}
+            // source={require("../assets/checkmark.json")}
+            source={animation}
             autoPlay
             loop={false}
             speed={0.75}

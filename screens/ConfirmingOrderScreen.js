@@ -20,6 +20,7 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import Modal from "react-native-modal";
 import LottieView from "lottie-react-native";
 import ModalWrapper from "../components/ModalWrapper";
+import animation from "../assets/checkmark.json";
 
 // const AnimatedLottieView = Animated.createAnimatedComponent(LottieView);
 
@@ -53,6 +54,7 @@ export default function ConfirmingOrder() {
     MontserratRegular: require("../assets/fonts/Montserrat-Regular.ttf"),
   });
 
+  // DISPLAY COMPLETE ORDER MODAL AFTER 5s.
   useEffect(() => {
     const timer = setTimeout(() => {
       setOrderConfirmed(true);
@@ -61,6 +63,7 @@ export default function ConfirmingOrder() {
     return () => clearTimeout(timer);
   }, []);
 
+  // NAVIGATE TO HOME AFTER 30s IF USER DON'T MANUALLY CLICK CLOSE BTN
   useEffect(() => {
     const timer = setTimeout(() => {
       toggleModal(false);
@@ -107,7 +110,7 @@ export default function ConfirmingOrder() {
       {orderConfirmed && (
         <ModalWrapper
           title="Order confirmed!"
-          animation={"../assets/checkmark.json"}
+          animation={animation}
           bottomText="Thank you and enjoy your ride!"
           backgroundColor="#32928c"
           navigateTo="Home"

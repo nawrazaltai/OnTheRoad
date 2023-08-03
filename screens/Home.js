@@ -19,6 +19,7 @@ import TrendingBrands from "../components/TrendingBrands";
 import PopularCars from "../components/PopularCars";
 import Header from "../components/Header";
 import ModalWrapper from "../components/ModalWrapper";
+import animation from "../assets/error.json";
 
 export default function Home({ navigation, route }) {
   const { firstName, getCars, logout, allCars, shuffledCars, isModalVisible } =
@@ -87,11 +88,15 @@ export default function Home({ navigation, route }) {
         </TouchableOpacity> */}
       </ScrollView>
 
-      {/* {isModalVisible ? (
-        <ModalWrapper>
-          <Text>{message}</Text>
-        </ModalWrapper>
-      ) : null} */}
+      {isModalVisible && message === "Fail" ? (
+        <ModalWrapper
+          title="Something went wrong.."
+          animation={animation}
+          bottomText="Please try to complete your rent again."
+          backgroundColor="#D10000"
+          navigateTo="Home"
+        ></ModalWrapper>
+      ) : null}
     </SafeAreaView>
   );
 }

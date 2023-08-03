@@ -112,17 +112,18 @@ export default function Payment(props) {
     };
 
     if (error) {
-      // Alert.alert(`Error code: ${error.code}`, error.message);
       if (error.code === "Canceled") {
         return;
       } else {
         navigation.navigate("Home", { message: "Fail" });
         toggleModal(!isModalVisible);
       }
+      // navigation.navigate("Home", { message: "Fail" });
+      // toggleModal(!isModalVisible);
     } else {
-      // car_booking(booking, selectedDays);
       // navigation.navigate("Home", { message: "Success" });
       // toggleModal(!isModalVisible);
+      car_booking(booking, selectedDays);
       navigation.navigate("Confirming", { message: "Success" });
     }
   };
